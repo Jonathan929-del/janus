@@ -7,13 +7,25 @@ import Sidebar from './Sidebar';
 
 // Styles
 const LayoutContainer = styled.div`
-    width:100%;
-    height:100vh;
+  width:100%;
+  height:100%;
+`
+const SidebarChildrenWrapper = styled.div`
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+`
+const ChildreContainer = styled.div`
+  width:calc(100vw - 250px);
+
+  @media screen and (max-width:768px){
+    width:calc(100vw - 150px);
+  }
 `
 
 
 // Main Function
-const Layout = () => {
+const Layout = ({children, page}) => {
   return (
     <LayoutContainer>
         <Head>
@@ -22,7 +34,12 @@ const Layout = () => {
             <link rel="icon" href="/favicon.ico" />
         </Head>
         <Nav />
-        <Sidebar />
+        <SidebarChildrenWrapper>
+          <Sidebar page={page}/>
+          <ChildreContainer>
+            {children}
+          </ChildreContainer>
+        </SidebarChildrenWrapper>
     </LayoutContainer>
   )
 }
