@@ -16,9 +16,11 @@ const SidebarChildrenWrapper = styled.div`
   justify-content:space-between;
 `
 const ChildreContainer = styled.div`
+  margin-left:250px;
   width:calc(100vw - 250px);
 
   @media screen and (max-width:768px){
+    margin-left:150px;
     width:calc(100vw - 150px);
   }
 `

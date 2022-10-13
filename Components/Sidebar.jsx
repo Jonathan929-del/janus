@@ -11,18 +11,19 @@ import {MdHomeWork, MdArrowForward} from 'react-icons/md';
 
 // Styles
 const SidebarContainer = styled.aside`
+    left:0;
     top:70px;
     width:15%;
-    z-index:2;
+    z-index:3;
+    width:250px;
     height:100vh;
     color:#fff;
-    min-width:250px;
-    position:sticky;
+    position:fixed;
+    height:calc(100vh - 70px);
     background-color:#333F50;
-    max-height:calc(100vh - 70px);
 
     @media screen and (max-width:768px){
-        min-width:150px;
+        width:150px;
     }
 `
 const SidebarWrapper = styled.div`

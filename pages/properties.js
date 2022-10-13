@@ -3,8 +3,9 @@ import axios from 'axios';
 import styled from 'styled-components';
 import {useEffect, useState} from 'react';
 import Layout from '../Components/Layout';
-import {MdOutlineArrowForwardIos} from 'react-icons/md';
-import {AiOutlineBackward, AiOutlineForward, AiOutlineDown} from 'react-icons/ai';
+import {AiOutlineForward} from 'react-icons/ai';
+import FilterArea from '../Components/FilterArea';
+import PropertiesData from '../Components/PropertiesData';
 
 
 // Styles
@@ -14,93 +15,18 @@ const PropertiesContainer = styled.section`
     height:calc(100vh - 70px);
 `
 const FilterSection = styled.div`
+    z-index:2;
     height:100%;
     display:flex;
-    min-width:250px;
-    position:absolute;
+    min-width:300px;
+    position:fixed;
     align-items:center;
-    left:${({isFilterOpened}) => isFilterOpened ? '0' : '-100vh'};
-`
-const FilterContainer = styled.div`
-    height:80%;
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    border:2px solid #ccc;
-`
-const SearchArea = styled.div`
-    flex:1;
-    display:flex;
-    align-items:center;
-    border-bottom:1px solid #ccc;
-    justify-content:space-between;
-`
-const SearchInput = styled.input`
-    padding:5px;
-    border:none;
-    outline:none;
-    margin-left:10px;
-    border:1px solid #ccc;
-`
-const CollapseIconContainer = styled.div`
-    height:100%;
-    display:flex;
-    cursor:pointer;
-    margin-right:10px;
-    align-items:center;
-`
-const FilterContentArea = styled.div`
-    flex:9;
-    display:flex;
-    overflow-y:scroll;
-    flex-direction:column;
+    background-color:transparent;
+    left:${({isFilterOpened}) => isFilterOpened ? '250px' : '-100vh'};
 
-    &::-webkit-scrollbar{
-        width:7px;
+    @media screen and (max-width:768px){
+        left:${({isFilterOpened}) => isFilterOpened ? '150px' : '-100vh'};
     }
-    &::-webkit-scrollbar-thumb{
-        border-radius:5px;
-        background-color:#5c5c5c;
-    }
-`
-const FilterItem = styled.div`
-    display:flex;
-    cursor:pointer;
-    align-items:center;
-    padding:10px 0 10px 5px;
-    justify-content:flex-start;
-`
-const Buildings = styled.div`
-    margin-left:30px;
-    display:${({openedProperty, currentProperty}) => openedProperty === currentProperty ? 'block' : 'none'};
-`
-const Components = styled.div`
-    margin-left:30px;
-    display:${({openedBuilding, currentBuilding}) => openedBuilding === currentBuilding ? 'block' : 'none'};
-`
-const Activities = styled.div`
-    margin-left:30px;
-    display:${({openedComponent, currentComponent}) => openedComponent === currentComponent ? 'block' : 'none'};
-`
-const NoCom = styled.p`
-    font-size:12px;
-    margin-left:10px;
-`
-const BuildingContent = styled.div`
-    margin-left:30px;
-`
-const ArrowIconContainer = styled.div`
-    height:100%;
-    display:flex;
-    font-size:12px;
-    align-items:center;
-`
-const Name = styled.p`
-    height:100%;
-    color:#5c5c5c;
-    font-size:14px;
-    font-weight:500;
-    margin-left:10px;
 `
 const FilterOpenIcon = styled.div`
     top:25%;
@@ -108,7 +34,7 @@ const FilterOpenIcon = styled.div`
     display:flex;
     font-size:20px;
     cursor:pointer;
-    position:absolute;
+    position:fixed;
     align-items:center;
     padding:5px 5px 0 10px;
     justify-content:center;
@@ -117,8 +43,7 @@ const FilterOpenIcon = styled.div`
     display:${({isFilterOpened}) => isFilterOpened ? 'none' : 'block'};
 `
 const DataSection = styled.div`
-    margin-left:${({isFilterOpened}) => isFilterOpened ? '250px' : '0'};
-    width:${({isFilterOpened}) => isFilterOpened ? 'calc(100% - 250px)' : '100%'};
+    width:100%;
 `
 
 
@@ -148,7 +73,7 @@ const Properties = () => {
             }
         }
         dataFetcher();
-    }, []);
+    }, [FilterArea]);
 
 
     // Opening sub contents
@@ -190,80 +115,28 @@ const Properties = () => {
         <Layout page='properties'>
             <PropertiesContainer>
                 <FilterSection isFilterOpened={isFilterOpened}>
-                    <FilterContainer>
-                        <SearchArea>
-                            <SearchInput placeholder='Quick Filter'/>
-                            <CollapseIconContainer><AiOutlineBackward onClick={filterToggler}/></CollapseIconContainer>
-                        </SearchArea>
-                        <FilterContentArea>
-                            {properties.map(property => (
-                                <>
-                                    <FilterItem key={property._id} onClick={() => propertyContentOpener(property.property_code)}>
-                                        <ArrowIconContainer>
-                                            {openedProperty === property.property_code ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
-                                        </ArrowIconContainer>
-                                        <Name>{`${property.property_code} ${property.name}`}</Name>
-                                    </FilterItem>
-                                    <Buildings openedProperty={openedProperty} currentProperty={property.property_code}>
-                                        {buildings.map(building => (
-                                            <>
-                                                <FilterItem key={building._id} onClick={() => buildingContentOpener(building.building_code)}>
-                                                    <ArrowIconContainer>
-                                                        {openedBuilding === building.building_code ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
-                                                    </ArrowIconContainer>
-                                                    <Name>{`${building.building_code}`}</Name>
-                                                </FilterItem>
-                                                {openedBuilding === building.building_code &&                        
-                                                    <BuildingContent>
-                                                        <FilterItem onClick={() => setIsComponentsOpened(!isComponentsOpened)}>
-                                                            <ArrowIconContainer>
-                                                                {isComponentsOpened ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
-                                                            </ArrowIconContainer>
-                                                            <Name>Components</Name>
-                                                        </FilterItem>
-                                                        {isComponentsOpened &&
-                                                            <Components>
-                                                                {components.length > 0 ? components.map(component => (
-                                                                    <>
-                                                                        <FilterItem key={component._id} onClick={() => componentContentOpener(component.component_code)}>
-                                                                            <ArrowIconContainer>
-                                                                                <MdOutlineArrowForwardIos />
-                                                                            </ArrowIconContainer>
-                                                                            <Name>{`${component.component_code}`}</Name>
-                                                                        </FilterItem>
-                                                                        {openedComponent === component.component_code &&
-                                                                            <Activities>
-                                                                                {activities.length > 0 ? activities.map(activity => (
-                                                                                    <FilterItem key={activity._id}>
-                                                                                        <Name>{`${activity.user}`}</Name>
-                                                                                    </FilterItem>
-                                                                                )) : <NoCom>No Activities to Show</NoCom>}
-                                                                            </Activities>
-                                                                        }
-                                                                    </>
-                                                                )) : <NoCom>No Components to Show</NoCom>}
-                                                            </Components>
-                                                        }
-                                                        <FilterItem>
-                                                            <ArrowIconContainer>
-                                                                <MdOutlineArrowForwardIos />
-                                                            </ArrowIconContainer>
-                                                            <Name>Rental Objects</Name>
-                                                        </FilterItem>
-                                                    </BuildingContent>
-                                                }
-                                            </>
-                                        ))}
-                                    </Buildings>
-                                </>
-                            ))}
-                        </FilterContentArea>
-                    </FilterContainer>
+                    <FilterArea
+                        filterToggler={filterToggler}
+                        properties={properties}
+                        propertyContentOpener={propertyContentOpener}
+                        openedProperty={openedProperty}
+                        buildings={buildings}
+                        buildingContentOpener={buildingContentOpener}
+                        openedBuilding={openedBuilding}
+                        setIsComponentsOpened={setIsComponentsOpened}
+                        isComponentsOpened={isComponentsOpened}
+                        components={components}
+                        componentContentOpener={componentContentOpener}
+                        activities={activities}
+                        openedComponent={openedComponent}
+                    />
                 </FilterSection>
                 <FilterOpenIcon isFilterOpened={isFilterOpened} onClick={filterToggler}>
                     <AiOutlineForward />
                 </FilterOpenIcon>
-                <DataSection isFilterOpened={isFilterOpened}></DataSection>
+                <DataSection isFilterOpened={isFilterOpened}>
+                    <PropertiesData />
+                </DataSection>
             </PropertiesContainer>
         </Layout>
     )
