@@ -27,6 +27,10 @@ const TopTopSection = styled.div`
 `
 const PropertyName = styled.p`
     color:#5c5c5c;
+
+    @media screen and (max-width:600px){
+        font-size:12px;
+    }
 `
 const OptionsArea = styled.div`
     width:100%;
@@ -45,6 +49,10 @@ const SelectedItem = styled.div`
     @media screen and (max-width:1100px){
         font-size:13px;
     }
+
+    @media screen and (max-width:600px){
+        font-size:11px;
+    }
 `
 const Item = styled.div`
     width:25%;
@@ -58,6 +66,10 @@ const Item = styled.div`
 
     @media screen and (max-width:1100px){
         font-size:13px;
+    }
+
+    @media screen and (max-width:600px){
+        font-size:11px;
     }
 `
 const TopBottomSection = styled.div`
@@ -144,6 +156,7 @@ const BottomSection = styled.div`
     gap:20px;
     height:100%;
     display:grid;
+    max-width:1000px;
     padding-top:50px;
     margin:0 20px 40px 0;
     grid-template-rows:repeat(5, 1fr);
@@ -170,6 +183,27 @@ const BottomSection = styled.div`
                             'area owner .';
         gap:10px;
         height:500px;
+    }
+
+    @media screen and (max-width:992px){
+        grid-template-rows:repeat(14, 1fr);
+        grid-template-columns:repeat(2, 1fr);
+        grid-template-areas:'propertyCode buildings'
+                            'address buildings'
+                            'longitude buildings'
+                            'legalName buildings'
+                            'zipCode buildings'
+                            'latitude .'
+                            'name .'
+                            'city .'
+                            'geoFence .'
+                            'operationsArea .'
+                            'responsibleUser .'
+                            'administrativeArea .'
+                            'area .'
+                            'owner .';
+        gap:5px;
+        height:unset;
     }
 `
 const Label = styled.p`
@@ -245,10 +279,18 @@ const BuildingValue = styled.div`
         font-size:12px;
     }
 `
+const Building = styled.p`
+    margin-top:10px;
+`
+const NoProp = styled.div`
+    width:100%;
+    padding:20px 0;
+    text-align:center;
+`
 
 
 // Main Function
-const PropertiesData = () => {
+const PropertiesData = ({selectedProperty, propertyBuildings}) => {
 
     const [isActionsOpened, setIsActionsOpened] = useState(false);
     const actionsToggler = () => {
@@ -257,94 +299,105 @@ const PropertiesData = () => {
 
     return (
         <MainContainer>
-            <TopSection>
-                <TopTopSection>
-                    <PropertyName>1003 BYGGMÄSTAREN</PropertyName>
-                    <ActionsButtonContainer>
-                        <ActionsButton onClick={actionsToggler}>
-                            <ActionsButtonText>Actions</ActionsButtonText>
-                            <ActionsButtonIconContainer>
-                                <AiOutlineDown />
-                            </ActionsButtonIconContainer>
-                        </ActionsButton>
-                        <ButtonContent isActionsOpened={isActionsOpened}>
-                            <Action>Add New</Action>
-                            <Action>Modify</Action>
-                            <LastAction>Delete</LastAction>
-                        </ButtonContent>
-                    </ActionsButtonContainer>
-                </TopTopSection>
-                <TopBottomSection>
-                    <OptionsArea>
-                        <SelectedItem>Main Data</SelectedItem>
-                        <Item>Attributes</Item>
-                        <Item>Data 2</Item>
-                        <Item>Data 3</Item>
-                    </OptionsArea>
-                </TopBottomSection>
-            </TopSection>
-            <BottomSection>
-                <PropertyCode>
-                    <Label>Property Code</Label>
-                    <Value>1006</Value>
-                </PropertyCode>
-                <Address>
-                    <Label>Address</Label>
-                    <Value>LAPG25616835454dgfcw</Value>
-                </Address>
-                <Longitude>
-                    <Label>Longitude</Label>
-                    <Value>20.1206534448479</Value>
-                </Longitude>
-                <LegalName>
-                    <Label>Legal Name</Label>
-                    <Value>BJORNEN8</Value>
-                </LegalName>
-                <ZipCode>
-                    <Label>ZipCode</Label>
-                    <Value>931 145</Value>
-                </ZipCode>
-                <Latitude>
-                    <Label>Latitude</Label>
-                    <Value>20.1206534448479</Value>
-                </Latitude>
-                <Name>
-                    <Label>Name</Label>
-                    <Value>1006</Value>
-                </Name>
-                <City>
-                    <Label>City</Label>
-                    <Value>Kiruna</Value>
-                </City>
-                <GeoFence>
-                    <Label>Geo Fence</Label>
-                    <Value>-</Value>
-                </GeoFence>
-                <OperationsArea>
-                    <Label>Operations Area</Label>
-                    <Value>1</Value>
-                </OperationsArea>
-                <ResponsibleUser>
-                    <Label>Responsible User</Label>
-                    <Value>Janus</Value>
-                </ResponsibleUser>
-                <AdministrativeArea>
-                    <Label>Administrative Area</Label>
-                    <Value>1</Value>
-                </AdministrativeArea>
-                <Area>
-                    <Label>Area</Label>
-                    <Value>76861</Value>
-                </Area>
-                <Owner>
-                    <Label>Owner</Label>
-                    <Value>1</Value>
-                </Owner>
-                <Buildings>
-                    <Label>Buildings</Label>
-                    <BuildingValue>Buildings</BuildingValue>
-                </Buildings>
-            </BottomSection>
+            {selectedProperty.property_code ?
+                <>
+                    <TopSection>
+                        <TopTopSection>
+                            <PropertyName>{`${selectedProperty.property_code} ${selectedProperty.name}`}</PropertyName>
+                            <ActionsButtonContainer>
+                                <ActionsButton onClick={actionsToggler}>
+                                    <ActionsButtonText>Actions</ActionsButtonText>
+                                    <ActionsButtonIconContainer>
+                                        <AiOutlineDown />
+                                    </ActionsButtonIconContainer>
+                                </ActionsButton>
+                                <ButtonContent isActionsOpened={isActionsOpened}>
+                                    <Action>Add New</Action>
+                                    <Action>Modify</Action>
+                                    <LastAction>Delete</LastAction>
+                                </ButtonContent>
+                            </ActionsButtonContainer>
+                        </TopTopSection>
+                        <TopBottomSection>
+                            <OptionsArea>
+                                <SelectedItem>Main Data</SelectedItem>
+                                <Item>Attributes</Item>
+                                <Item>Data 2</Item>
+                                <Item>Data 3</Item>
+                            </OptionsArea>
+                        </TopBottomSection>
+                    </TopSection>
+                    <BottomSection>
+                        <PropertyCode>
+                            <Label>Property Code</Label>
+                            <Value>{selectedProperty.property_code}</Value>
+                        </PropertyCode>
+                        <Address>
+                            <Label>Address</Label>
+                            <Value>{selectedProperty.address_label}</Value>
+                        </Address>
+                        <Longitude>
+                            <Label>Longitude</Label>
+                            <Value>{selectedProperty.longitude}</Value>
+                        </Longitude>
+                        <LegalName>
+                            <Label>Legal Name</Label>
+                            <Value>{selectedProperty.legal_name}</Value>
+                        </LegalName>
+                        <ZipCode>
+                            <Label>ZipCode</Label>
+                            <Value>{selectedProperty.zip_code}</Value>
+                        </ZipCode>
+                        <Latitude>
+                            <Label>Latitude</Label>
+                            <Value>{selectedProperty.latitude}</Value>
+                        </Latitude>
+                        <Name>
+                            <Label>Name</Label>
+                            <Value>{selectedProperty.name}</Value>
+                        </Name>
+                        <City>
+                            <Label>City</Label>
+                            <Value>{selectedProperty.postal_address}</Value>
+                        </City>
+                        <GeoFence>
+                            <Label>Geo Fence</Label>
+                            <Value>-</Value>
+                        </GeoFence>
+                        <OperationsArea>
+                            <Label>Operations Area</Label>
+                            <Value>-</Value>
+                        </OperationsArea>
+                        <ResponsibleUser>
+                            <Label>Responsible User</Label>
+                            <Value>{selectedProperty.responsible_user || '-'}</Value>
+                        </ResponsibleUser>
+                        <AdministrativeArea>
+                            <Label>Administrative Area</Label>
+                            <Value>{selectedProperty.administrative_area}</Value>
+                        </AdministrativeArea>
+                        <Area>
+                            <Label>Area</Label>
+                            <Value>-</Value>
+                        </Area>
+                        <Owner>
+                            <Label>Owner</Label>
+                            <Value>{selectedProperty.owner}</Value>
+                        </Owner>
+                        <Buildings>
+                            <Label>Buildings</Label>
+                            <BuildingValue>
+                                {propertyBuildings.map(building => 
+                                    <Building>
+                                        {building.building_code}
+                                    </Building>
+                                )}
+                            </BuildingValue>
+                        </Buildings>
+                    </BottomSection>
+                </>
+                : <NoProp>No properties selected</NoProp>
+            }
         </MainContainer>
     )
 }

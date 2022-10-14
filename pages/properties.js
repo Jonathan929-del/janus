@@ -3,7 +3,6 @@ import axios from 'axios';
 import styled from 'styled-components';
 import {useEffect, useState} from 'react';
 import Layout from '../Components/Layout';
-import {AiOutlineForward} from 'react-icons/ai';
 import FilterArea from '../Components/FilterArea';
 import PropertiesData from '../Components/PropertiesData';
 
@@ -15,32 +14,23 @@ const PropertiesContainer = styled.section`
     height:calc(100vh - 70px);
 `
 const FilterSection = styled.div`
-    z-index:2;
-    height:100%;
+    left:0;
+    z-index:3;
+    top:370px;
+    height:70%;
     display:flex;
-    min-width:300px;
     position:fixed;
+    max-width:250px;
     align-items:center;
     background-color:transparent;
-    left:${({isFilterOpened}) => isFilterOpened ? '250px' : '-100vh'};
+
+    @media screen and (max-width:992px){
+        max-width:150px;
+    }
 
     @media screen and (max-width:768px){
         left:${({isFilterOpened}) => isFilterOpened ? '150px' : '-100vh'};
     }
-`
-const FilterOpenIcon = styled.div`
-    top:25%;
-    color:#fff;
-    display:flex;
-    font-size:20px;
-    cursor:pointer;
-    position:fixed;
-    align-items:center;
-    padding:5px 5px 0 10px;
-    justify-content:center;
-    background-color:#35c7FB;
-    border-radius:0 5px 5px 0;
-    display:${({isFilterOpened}) => isFilterOpened ? 'none' : 'block'};
 `
 const DataSection = styled.div`
     width:100%;
@@ -49,13 +39,6 @@ const DataSection = styled.div`
 
 // Main Function
 const Properties = () => {
-
-
-    // Opening and closing filter
-    const [isFilterOpened, setIsFilterOpened] = useState(true);
-    const filterToggler = () => {
-        setIsFilterOpened(!isFilterOpened);
-    }
 
 
     // Fetching filter data
@@ -104,7 +87,22 @@ const Properties = () => {
             openedComponent === '' ? setOpenedComponent(id) : openedComponent === id ? setOpenedComponent('') : setOpenedComponent(id);
             const activitiesRes = await axios.get(`https://janus-server-side.herokuapp.com/activities/${id}`);
             setActivities(activitiesRes.data);
-            console.log(activities);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
+    // Fetching property data
+    const [selectedProperty, setSelectedProperty] = useState({});
+    const [propertyBuildings, setPropertyBuildings] = useState([{}]);
+    const selectedPropertyHandler = async id => {
+        try {
+            const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/${id}`);
+            setSelectedProperty(res.data);
+            const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${res.data.property_code}`);
+            setPropertyBuildings(buildingsRes.data);
+            filterToggler();
         } catch (err) {
             console.log(err);
         }
@@ -114,9 +112,8 @@ const Properties = () => {
     return (
         <Layout page='properties'>
             <PropertiesContainer>
-                <FilterSection isFilterOpened={isFilterOpened}>
+                <FilterSection>
                     <FilterArea
-                        filterToggler={filterToggler}
                         properties={properties}
                         propertyContentOpener={propertyContentOpener}
                         openedProperty={openedProperty}
@@ -129,13 +126,15 @@ const Properties = () => {
                         componentContentOpener={componentContentOpener}
                         activities={activities}
                         openedComponent={openedComponent}
+                        selectedPropertyHandler={selectedPropertyHandler}
+                        selectedProperty={selectedProperty}
                     />
                 </FilterSection>
-                <FilterOpenIcon isFilterOpened={isFilterOpened} onClick={filterToggler}>
-                    <AiOutlineForward />
-                </FilterOpenIcon>
-                <DataSection isFilterOpened={isFilterOpened}>
-                    <PropertiesData />
+                <DataSection>
+                    <PropertiesData
+                        selectedProperty={selectedProperty}
+                        propertyBuildings={propertyBuildings}
+                    />
                 </DataSection>
             </PropertiesContainer>
         </Layout>

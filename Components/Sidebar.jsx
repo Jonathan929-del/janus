@@ -28,7 +28,7 @@ const SidebarContainer = styled.aside`
 `
 const SidebarWrapper = styled.div`
     width:100%;
-    height:100%;
+    height:30%;
     display:flex;
     padding-top:50px;
     align-items:center;
