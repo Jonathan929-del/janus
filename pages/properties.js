@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import {useEffect, useState} from 'react';
 import Layout from '../Components/Layout';
 import FilterArea from '../Components/FilterArea';
-import PropertiesData from '../Components/PropertiesData';
+import PropertyDataSection from '../Components/PropertyDataSection';
+import { RiContactsBookLine } from 'react-icons/ri';
 
 
 // Styles
@@ -49,9 +50,9 @@ const Properties = () => {
             try {
                 const propertiesRes = await axios.get('https://janus-server-side.herokuapp.com/properties');
                 setProperties(propertiesRes.data.sort((a, b) => a.property_code - b.property_code));
-                const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-code/${JSON.parse(Cookie.get('property'))}`);
-                setSelectedProperty(res.data);
-                const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${JSON.parse(Cookie.get('property'))}`);
+                const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${Cookie.get('property')}`);
+                Cookie.get('property') && setSelectedProperty(res.data);
+                const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${selectedProperty.property_code}`);
                 setPropertyBuildings(buildingsRes.data);
             } catch (err) {
                 console.log(err);
@@ -99,9 +100,9 @@ const Properties = () => {
     const [propertyBuildings, setPropertyBuildings] = useState([{}]);
     const selectedPropertyHandler = async id => {
         try {
-            const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-code/${id}`);
+            const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${id}`);
             setSelectedProperty(res.data);
-            Cookie.set('property', res.data.property_code);
+            Cookie.set('property', res.data._id);
             setIsUpdate(false);
         } catch (err) {
             console.log(err);
@@ -135,7 +136,7 @@ const Properties = () => {
                     />
                 </FilterSection>
                 <DataSection>
-                    <PropertiesData
+                    <PropertyDataSection
                         selectedProperty={selectedProperty}
                         propertyBuildings={propertyBuildings}
                         isUpdate={isUpdate}

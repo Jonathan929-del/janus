@@ -178,7 +178,7 @@ const FilterArea = ({selectedProperty, properties, propertyContentOpener, opened
                         <ArrowIconContainer onClick={() => propertyContentOpener(property.property_code)}>
                             {openedProperty === property.property_code ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
                         </ArrowIconContainer>
-                        <Name onClick={() => selectedPropertyHandler(property.property_code)}>{`${property.property_code} ${property.name}`}</Name>
+                        <Name onClick={() => selectedPropertyHandler(property._id)}>{`${property.property_code} ${property.name}`}</Name>
                     </FilterItem>
                     <Buildings openedProperty={openedProperty} currentProperty={property.property_code}>
                         {buildings[0].building_code ? buildings.map(building => (

@@ -331,7 +331,7 @@ const CloseButton = styled.button`
 
 
 // Main Function
-const PropertiesData = ({selectedProperty, propertyBuildings, isUpdate, setIsUpdate, setSelectedProperty}) => {
+const PropertyDataSection = ({selectedProperty, propertyBuildings, isUpdate, setIsUpdate, setSelectedProperty}) => {
 
 
     // Actions opener
@@ -344,7 +344,7 @@ const PropertiesData = ({selectedProperty, propertyBuildings, isUpdate, setIsUpd
     // Delete handler
     const deleteHandler = async () => {
         try {
-            await axios.delete(`https://janus-server-side.herokuapp.com/properties/${selectedProperty.property_code}`);
+            await axios.delete(`https://janus-server-side.herokuapp.com/properties/${selectedProperty._id}`);
             window.location.reload();
         } catch (err) {
             console.log(err);
@@ -353,14 +353,14 @@ const PropertiesData = ({selectedProperty, propertyBuildings, isUpdate, setIsUpd
 
 
     // Update handler
-    const [input, setInput] = useState({});
+    const [input, setInput] = useState();
     const updateInitializer = () => {
         selectedProperty && setIsUpdate(true);
         setIsActionsOpened(false);
     };
     const updateHandler = async () => {
         try {
-            await axios.put(`https://janus-server-side.herokuapp.com/properties/${selectedProperty.property_code}`, input);
+            await axios.put(`https://janus-server-side.herokuapp.com/properties/${selectedProperty._id}`, input);
             window.location.reload();
         } catch (err) {
             console.log(err);
@@ -382,11 +382,11 @@ const PropertiesData = ({selectedProperty, propertyBuildings, isUpdate, setIsUpd
             address_label:selectedProperty.address_label,
             owner:selectedProperty.owner
         });
-    }, [selectedProperty]);
+    }, [isUpdate]);
         
     return (
         <MainContainer>
-            {selectedProperty.property_code ?
+            {selectedProperty?.property_code ?
                 <>
                     <TopSection>
                         <TopTopSection>
@@ -496,4 +496,4 @@ const PropertiesData = ({selectedProperty, propertyBuildings, isUpdate, setIsUpd
 
 
 // Export
-export default PropertiesData;
+export default PropertyDataSection;
