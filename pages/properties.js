@@ -102,7 +102,7 @@ const Properties = () => {
         try {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${id}`);
             setSelectedProperty(res.data);
-            Cookie.set('property', res.data._id);
+            Cookie.set('property', id);
             setIsUpdate(false);
         } catch (err) {
             console.log(err);
