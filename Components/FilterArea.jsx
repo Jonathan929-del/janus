@@ -7,8 +7,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // Styles
 const FilterContainer = styled.div`
-    height:100%;
     width:100%;
+    height:100%;
     display:flex;
     color:#fff;
     flex-direction:column;
@@ -31,6 +31,11 @@ const SearchInput = styled.input`
 
     @media screen and (max-width:992px){
         font-size:12px;
+    }
+
+    @media screen and (max-width:768px){
+        width:90%;
+        margin-left:5px;
     }
 `
 const FilterContentArea = styled.div`
@@ -55,22 +60,40 @@ const FilterItem = styled.div`
     align-items:center;
     justify-content:flex-start;
     background-color:${({selectedProperty, currentProperty}) => selectedProperty ? selectedProperty.property_code === currentProperty.property_code ? '#35c7FB' : '' : ''};
+
+    @media screen and (max-width:768px){
+        min-height:50px;
+    }
 `
 const Buildings = styled.div`
     margin-left:20px;
     display:${({openedProperty, currentProperty}) => openedProperty === currentProperty ? 'block' : 'none'};
 `
 const Components = styled.div`
+    height:100%;
     margin-left:20px;
     display:${({openedBuilding, currentBuilding}) => openedBuilding === currentBuilding ? 'block' : 'none'};
+
+    @media screen and (max-width:768px){
+        margin-left:0;
+    }
 `
 const Activities = styled.div`
     margin-left:70px;
     display:${({openedComponent, currentComponent}) => openedComponent === currentComponent ? 'block' : 'none'};
+
+    @media screen and (max-width:768px){
+        margin-left:40px;
+    }
 `
 const NoCom = styled.p`
     font-size:12px;
     margin-left:-10px;
+
+    @media screen and (max-width:768px){
+        font-size:10px;
+        margin-left:-50px;
+    }
 `
 const BuildingContent = styled.div`
     margin-left:30px;
@@ -81,6 +104,11 @@ const ArrowIconContainer = styled.div`
     font-size:12px;
     padding:0 20px;
     align-items:center;
+
+    @media screen and (max-width:768px){
+        padding:0 10px;
+        font-size:10px;
+    }
 `
 const Name = styled.p`
     width:100%;
@@ -94,6 +122,11 @@ const Name = styled.p`
     @media screen and (max-width:992px){
         font-size:12px;
     }
+
+    @media screen and (max-width:768px){
+        font-size:10px;
+        margin-left:5px;
+    }
 `
 const LoadingIconContainer = styled.div`
     width:100%;
@@ -101,6 +134,33 @@ const LoadingIconContainer = styled.div`
     padding:30px 0;
     align-items:center;
     justify-content:center;
+`
+const ComponentContainerFilterItem = styled.div`
+    height:70px;
+    display:flex;
+    cursor:pointer;
+    min-height:70px;
+    align-items:center;
+    justify-content:flex-start;
+    background-color:${({selectedProperty, currentProperty}) => selectedProperty ? selectedProperty.property_code === currentProperty.property_code ? '#35c7FB' : '' : ''};
+
+    @media screen and (max-width:768px){
+        min-height:50px;
+        margin-left:-20px;
+    }
+`
+const NestedFilterItem = styled.div`
+    height:70px;
+    display:flex;
+    cursor:pointer;
+    min-height:70px;
+    align-items:center;
+    justify-content:flex-start;
+    background-color:${({selectedProperty, currentProperty}) => selectedProperty ? selectedProperty.property_code === currentProperty.property_code ? '#35c7FB' : '' : ''};
+
+    @media screen and (max-width:768px){
+        min-height:50px;
+    }
 `
 
 
@@ -118,35 +178,35 @@ const FilterArea = ({selectedProperty, properties, propertyContentOpener, opened
                         <ArrowIconContainer onClick={() => propertyContentOpener(property.property_code)}>
                             {openedProperty === property.property_code ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
                         </ArrowIconContainer>
-                        <Name onClick={() => selectedPropertyHandler(property.latitude)}>{`${property.property_code} ${property.name}`}</Name>
+                        <Name onClick={() => selectedPropertyHandler(property.property_code)}>{`${property.property_code} ${property.name}`}</Name>
                     </FilterItem>
                     <Buildings openedProperty={openedProperty} currentProperty={property.property_code}>
                         {buildings[0].building_code ? buildings.map(building => (
                             <>
-                                <FilterItem key={building._id}>
+                                <NestedFilterItem key={building._id}>
                                     <ArrowIconContainer onClick={() => buildingContentOpener(building.building_code)}>
                                         {openedBuilding === building.building_code ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
                                     </ArrowIconContainer>
                                     <Name>{`${building.building_code}`}</Name>
-                                </FilterItem>
+                                </NestedFilterItem>
                                 {openedBuilding === building.building_code &&                        
                                     <BuildingContent>
-                                        <FilterItem>
+                                        <ComponentContainerFilterItem>
                                             <ArrowIconContainer onClick={() => setIsComponentsOpened(!isComponentsOpened)}>
                                                 {isComponentsOpened ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
                                             </ArrowIconContainer>
                                             <Name>Components</Name>
-                                        </FilterItem>
+                                        </ComponentContainerFilterItem>
                                         {isComponentsOpened &&
                                             <Components>
                                                 {components.length > 0 ? components.map(component => (
                                                     <>
-                                                        <FilterItem key={component._id}>
+                                                        <NestedFilterItem key={component._id}>
                                                             <ArrowIconContainer onClick={() => componentContentOpener(component.component_code)}>
                                                                 <MdOutlineArrowForwardIos />
                                                             </ArrowIconContainer>
                                                             <Name>{`${component.component_code}`}</Name>
-                                                        </FilterItem>
+                                                        </NestedFilterItem>
                                                         {openedComponent === component.component_code &&
                                                             <Activities>
                                                                 {activities.length > 0 ? activities.map(activity => (
@@ -160,12 +220,12 @@ const FilterArea = ({selectedProperty, properties, propertyContentOpener, opened
                                                 )) : <NoCom>No Components to Show</NoCom>}
                                             </Components>
                                         }
-                                        <FilterItem>
+                                        <ComponentContainerFilterItem>
                                             <ArrowIconContainer>
                                                 <MdOutlineArrowForwardIos />
                                             </ArrowIconContainer>
                                             <Name>Rental Objects</Name>
-                                        </FilterItem>
+                                        </ComponentContainerFilterItem>
                                     </BuildingContent>
                                 }
                             </>

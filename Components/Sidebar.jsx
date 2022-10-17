@@ -54,7 +54,7 @@ const CreateButton = styled.button`
     }
 
     @media screen and (max-width:768px){
-        font-size:11px;
+        font-size:10px;
     }
 `
 const PlusContainer = styled.p`
@@ -141,10 +141,15 @@ const PropertiesText = styled.p`
     width:100px;
     margin-left:10px;
     border-bottom:3px solid #35c7FB;
+
+    @media screen and (max-width:768px){
+        height:25px;
+        font-size:13px;
+    }
 `
 const AnchorLink = styled.a`
-    height:50px;
     width:100%;
+    height:50px;
     color:#fff;
     display:flex;
     margin-top:20px;
@@ -153,6 +158,10 @@ const AnchorLink = styled.a`
 
     &:hover{
         text-decoration:underline;
+    }
+
+    @media screen and (max-width:768px){
+        font-size:13px;
     }
 `
 const ArrowBackIconContainer = styled.div`
@@ -169,6 +178,11 @@ const HomeIconContainer = styled.div`
     margin-right:15px;
     align-items:center;
     justify-content:center;
+
+    @media screen and (max-width:768px){
+        font-size:20px;
+        margin-right:10px;
+    }
 `
 
 
@@ -181,7 +195,7 @@ const Sidebar = ({page}) => {
                 <PlusContainer>+</PlusContainer>
                 <CreateButtonText>Create New</CreateButtonText>
             </CreateButton>
-            {page !== 'properties' &&
+            {page === 'home' &&
                 <ListContainer>
                     <Link href='/properties' passHref>
                         <ListItem>
@@ -241,6 +255,17 @@ const Sidebar = ({page}) => {
                         <AnchorLink>
                             <HomeIconContainer><MdHomeWork style={{height:'30px'}}/></HomeIconContainer>
                             Navigation
+                        </AnchorLink>
+                    </Link>
+                </ListContainer>
+            }
+            {page === 'add-property' &&
+                <ListContainer>
+                    <PropertiesText>Properties</PropertiesText>
+                    <Link href='/properties' passHref>
+                        <AnchorLink>
+                            <ArrowBackIconContainer><BiArrowBack style={{height:'30px'}}/></ArrowBackIconContainer>
+                            Back To Properties
                         </AnchorLink>
                     </Link>
                 </ListContainer>

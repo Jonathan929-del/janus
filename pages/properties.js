@@ -1,5 +1,6 @@
 // Imports
 import axios from 'axios';
+import Cookie from 'js-cookie';
 import styled from 'styled-components';
 import {useEffect, useState} from 'react';
 import Layout from '../Components/Layout';
@@ -23,13 +24,9 @@ const FilterSection = styled.div`
     max-width:250px;
     align-items:center;
     background-color:transparent;
-
-    @media screen and (max-width:992px){
-        max-width:150px;
-    }
-
+    
     @media screen and (max-width:768px){
-        left:${({isFilterOpened}) => isFilterOpened ? '150px' : '-100vh'};
+        max-width:150px;
     }
 `
 const DataSection = styled.div`
@@ -46,17 +43,22 @@ const Properties = () => {
     const [buildings, setBuildings] = useState([{}]);
     const [components, setComponents] = useState([{}]);
     const [activities, setActivities] = useState([{}]);
+    const [selectedProperty, setSelectedProperty] = useState({});
     useEffect(() => {
         const dataFetcher = async () => {
             try {
                 const propertiesRes = await axios.get('https://janus-server-side.herokuapp.com/properties');
-                setProperties(propertiesRes.data);
+                setProperties(propertiesRes.data.sort((a, b) => a.property_code - b.property_code));
+                const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-code/${JSON.parse(Cookie.get('property'))}`);
+                setSelectedProperty(res.data);
+                const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${JSON.parse(Cookie.get('property'))}`);
+                setPropertyBuildings(buildingsRes.data);
             } catch (err) {
                 console.log(err);
             }
         }
         dataFetcher();
-    }, [FilterArea]);
+    }, [FilterArea, selectedProperty]);
 
 
     // Opening sub contents
@@ -94,19 +96,21 @@ const Properties = () => {
 
 
     // Fetching property data
-    const [selectedProperty, setSelectedProperty] = useState({});
     const [propertyBuildings, setPropertyBuildings] = useState([{}]);
     const selectedPropertyHandler = async id => {
         try {
-            const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/${id}`);
+            const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-code/${id}`);
             setSelectedProperty(res.data);
-            const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${res.data.property_code}`);
-            setPropertyBuildings(buildingsRes.data);
-            filterToggler();
+            Cookie.set('property', res.data.property_code);
+            setIsUpdate(false);
         } catch (err) {
             console.log(err);
         }
     };
+
+
+    // Updating property
+    const [isUpdate, setIsUpdate] = useState(false);
 
 
     return (
@@ -134,6 +138,9 @@ const Properties = () => {
                     <PropertiesData
                         selectedProperty={selectedProperty}
                         propertyBuildings={propertyBuildings}
+                        isUpdate={isUpdate}
+                        setIsUpdate={setIsUpdate}
+                        setSelectedProperty={setSelectedProperty}
                     />
                 </DataSection>
             </PropertiesContainer>

@@ -1,7 +1,9 @@
 // Imports
-import {useState} from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
+import {useState, useEffect} from 'react';
 import {AiOutlineDown} from 'react-icons/ai';
+import Link from 'next/link';
 
 
 // Styles
@@ -163,13 +165,9 @@ const BottomSection = styled.div`
     grid-template-columns:repeat(4, 1fr);
     grid-template-areas:'propertyCode address longitude buildings'
                         'legalName zipCode latitude buildings'
-                        'name city geoFence buildings'
-                        'operationsArea responsibleUser . .'
-                        'administrativeArea area owner .';
-
-    @media screen and (max-width:992px){
-        gap:10px;
-    }
+                        'name city operationsArea buildings'
+                        'responsibleUser administrativeArea area .'
+                        'owner . . .';
 
     @media screen and (max-width:992px){
         grid-template-rows:repeat(9, 1fr);
@@ -178,15 +176,15 @@ const BottomSection = styled.div`
                             'longitude legalName buildings'
                             'zipCode latitude buildings'
                             'name city buildings'
-                            'geoFence operationsArea .'
-                            'responsibleUser administrativeArea .'
-                            'area owner .';
+                            'operationsArea responsibleUser .'
+                            'administrativeArea area .'
+                            'owner . .';
         gap:10px;
         height:500px;
     }
 
-    @media screen and (max-width:992px){
-        grid-template-rows:repeat(14, 1fr);
+    @media screen and (max-width:768px){
+        grid-template-rows:repeat(13, 1fr);
         grid-template-columns:repeat(2, 1fr);
         grid-template-areas:'propertyCode buildings'
                             'address buildings'
@@ -196,14 +194,14 @@ const BottomSection = styled.div`
                             'latitude .'
                             'name .'
                             'city .'
-                            'geoFence .'
                             'operationsArea .'
                             'responsibleUser .'
                             'administrativeArea .'
                             'area .'
                             'owner .';
-        gap:5px;
+        gap:15px;
         height:unset;
+        padding-bottom:50px;
     }
 `
 const Label = styled.p`
@@ -215,6 +213,18 @@ const Label = styled.p`
     }
 `
 const Value = styled.p`
+    padding:10px;
+    font-size:14px;
+    border-radius:5px;
+    background-color:#c3c3c3;
+
+    @media screen and (max-width:992px){
+        font-size:12px;
+    }
+`
+const InputValue = styled.input`
+    border:none;
+    outline:none;
     padding:10px;
     font-size:14px;
     border-radius:5px;
@@ -247,9 +257,6 @@ const Name = styled.div`
 `
 const City = styled.div`
     grid-area:city;
-`
-const GeoFence = styled.div`
-    grid-area:geoFence;
 `
 const OperationsArea = styled.div`
     grid-area:operationsArea;
@@ -287,16 +294,96 @@ const NoProp = styled.div`
     padding:20px 0;
     text-align:center;
 `
+const UpdateButtons = styled.div`
+    width:100%;
+    max-width:180px;
+    display:flex;
+    justify-content:space-between;
+`
+const UpdateButton = styled.button`
+    border:none;
+    outline:none;
+    color:#fff;
+    cursor:pointer;
+    padding:7px 20px;
+    border-radius:5px;
+    transition:0.1s linear;
+    background-color:#35c7FB;
+
+    &:hover{
+        opacity:0.8;
+    }
+`
+const CloseButton = styled.button`
+        border:none;
+    outline:none;
+    color:#fff;
+    cursor:pointer;
+    padding:7px 20px;
+    border-radius:5px;
+    transition:0.1s linear;
+    background-color:#c3c3c3;
+
+    &:hover{
+        opacity:0.8;
+    }
+`
 
 
 // Main Function
-const PropertiesData = ({selectedProperty, propertyBuildings}) => {
+const PropertiesData = ({selectedProperty, propertyBuildings, isUpdate, setIsUpdate, setSelectedProperty}) => {
 
+
+    // Actions opener
     const [isActionsOpened, setIsActionsOpened] = useState(false);
     const actionsToggler = () => {
         setIsActionsOpened(!isActionsOpened);
     };
 
+
+    // Delete handler
+    const deleteHandler = async () => {
+        try {
+            await axios.delete(`https://janus-server-side.herokuapp.com/properties/${selectedProperty.property_code}`);
+            window.location.reload();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
+    // Update handler
+    const [input, setInput] = useState({});
+    const updateInitializer = () => {
+        selectedProperty && setIsUpdate(true);
+        setIsActionsOpened(false);
+    };
+    const updateHandler = async () => {
+        try {
+            await axios.put(`https://janus-server-side.herokuapp.com/properties/${selectedProperty.property_code}`, input);
+            window.location.reload();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    useEffect(() => {
+        setInput({
+            property_code:selectedProperty.property_code,
+            postal_address:selectedProperty.postal_address,
+            longitude:selectedProperty.longitude,
+            legal_name:selectedProperty.legal_name,
+            zip_code:selectedProperty.zip_code,
+            latitude:selectedProperty.latitude,
+            name:selectedProperty.name,
+            postal_address:selectedProperty.postal_address,
+            maintenance_area:selectedProperty.maintenance_area,
+            administrative_area:selectedProperty.administrative_area,
+            sum_area_bta:selectedProperty.sum_area_bta,
+            address_label:selectedProperty.address_label,
+            owner:selectedProperty.owner
+        });
+    }, [selectedProperty]);
+        
     return (
         <MainContainer>
             {selectedProperty.property_code ?
@@ -312,9 +399,9 @@ const PropertiesData = ({selectedProperty, propertyBuildings}) => {
                                     </ActionsButtonIconContainer>
                                 </ActionsButton>
                                 <ButtonContent isActionsOpened={isActionsOpened}>
-                                    <Action>Add New</Action>
-                                    <Action>Modify</Action>
-                                    <LastAction>Delete</LastAction>
+                                    <Action><Link href='/add-property'><a style={{color:'#000', textDecoration:'none'}}>Add New</a></Link></Action>
+                                    <Action onClick={updateInitializer}>Modify</Action>
+                                    <LastAction onClick={deleteHandler}>Delete</LastAction>
                                 </ButtonContent>
                             </ActionsButtonContainer>
                         </TopTopSection>
@@ -330,69 +417,74 @@ const PropertiesData = ({selectedProperty, propertyBuildings}) => {
                     <BottomSection>
                         <PropertyCode>
                             <Label>Property Code</Label>
-                            <Value>{selectedProperty.property_code}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.property_code}</Value> : <InputValue value={input.property_code} onChange={e => setInput({...input, property_code:e.target.value})}/>}
                         </PropertyCode>
                         <Address>
                             <Label>Address</Label>
-                            <Value>{selectedProperty.address_label}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.address_label}</Value> : <InputValue value={input.address_label} onChange={e => setInput({...input, address_label:e.target.value})}/>}
                         </Address>
                         <Longitude>
                             <Label>Longitude</Label>
-                            <Value>{selectedProperty.longitude}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.longitude || '-'}</Value> : <InputValue value={input.longitude} onChange={e => setInput({...input, longitude:e.target.value})}/>}
                         </Longitude>
                         <LegalName>
                             <Label>Legal Name</Label>
-                            <Value>{selectedProperty.legal_name}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.legal_name}</Value> : <InputValue value={input.legal_name} onChange={e => setInput({...input, legal_name:e.target.value})}/>}
                         </LegalName>
                         <ZipCode>
                             <Label>ZipCode</Label>
-                            <Value>{selectedProperty.zip_code}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.zip_code}</Value> : <InputValue value={input.zip_code} onChange={e => setInput({...input, zip_code:e.target.value})}/>}
                         </ZipCode>
                         <Latitude>
                             <Label>Latitude</Label>
-                            <Value>{selectedProperty.latitude}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.latitude || '-'}</Value> : <InputValue value={input.latitude} onChange={e => setInput({...input, latitude:e.target.value})}/>}
                         </Latitude>
                         <Name>
                             <Label>Name</Label>
-                            <Value>{selectedProperty.name}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, name:e.target.value})}/>}
                         </Name>
                         <City>
                             <Label>City</Label>
-                            <Value>{selectedProperty.postal_address}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.postal_address}</Value> : <InputValue value={input.postal_address} onChange={e => setInput({...input, postal_address:e.target.value})}/>}
                         </City>
-                        <GeoFence>
-                            <Label>Geo Fence</Label>
-                            <Value>-</Value>
-                        </GeoFence>
                         <OperationsArea>
-                            <Label>Operations Area</Label>
-                            <Value>-</Value>
+                            <Label>Maintenance Area</Label>
+                            {!isUpdate ? <Value>{selectedProperty.maintenance_area}</Value> : <InputValue value={input.maintenance_area} onChange={e => setInput({...input, maintenance_area:e.target.value})}/>}
                         </OperationsArea>
                         <ResponsibleUser>
                             <Label>Responsible User</Label>
-                            <Value>{selectedProperty.responsible_user || '-'}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, user:e.target.value})}/>}
                         </ResponsibleUser>
                         <AdministrativeArea>
                             <Label>Administrative Area</Label>
-                            <Value>{selectedProperty.administrative_area}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.administrative_area}</Value> : <InputValue value={input.administrative_area} onChange={e => setInput({...input, administrative_area:e.target.value})}/>}
                         </AdministrativeArea>
                         <Area>
                             <Label>Area</Label>
-                            <Value>-</Value>
+                            {!isUpdate ? <Value>{selectedProperty.sum_area_bta}</Value> : <InputValue value={input.sum_area_bta} onChange={e => setInput({...input, sum_area_bta:e.target.value})}/>}
                         </Area>
                         <Owner>
                             <Label>Owner</Label>
-                            <Value>{selectedProperty.owner}</Value>
+                            {!isUpdate ? <Value>{selectedProperty.owner}</Value> : <InputValue value={input.owner} onChange={e => setInput({...input, owner:e.target.value})}/>}
                         </Owner>
                         <Buildings>
-                            <Label>Buildings</Label>
-                            <BuildingValue>
-                                {propertyBuildings.map(building => 
-                                    <Building>
-                                        {building.building_code}
-                                    </Building>
-                                )}
-                            </BuildingValue>
+                            {isUpdate ?
+                                <UpdateButtons>
+                                    <UpdateButton onClick={updateHandler}>Update</UpdateButton>
+                                    <CloseButton onClick={() => setIsUpdate(false)}>Close</CloseButton>
+                                </UpdateButtons>
+                                :
+                                <>
+                                    <Label>Buildings</Label>
+                                    <BuildingValue>
+                                        {propertyBuildings.map(building => 
+                                            <Building>
+                                                {building.building_code}
+                                            </Building>
+                                        )}
+                                    </BuildingValue>
+                                </>
+                            }
                         </Buildings>
                     </BottomSection>
                 </>
