@@ -156,11 +156,12 @@ const LastAction = styled.div`
 `
 const BottomSection = styled.div`
     gap:20px;
+    width:100%;
     height:100%;
     display:grid;
     max-width:1000px;
-    padding-top:50px;
-    margin:0 20px 40px 0;
+    padding:50px 20px 20px 0;
+    margin:auto;
     grid-template-rows:repeat(5, 1fr);
     grid-template-columns:repeat(4, 1fr);
     grid-template-areas:'propertyCode address longitude buildings'
@@ -289,11 +290,6 @@ const BuildingValue = styled.div`
 const Building = styled.p`
     margin-top:10px;
 `
-const NoProp = styled.div`
-    width:100%;
-    padding:20px 0;
-    text-align:center;
-`
 const UpdateButtons = styled.div`
     width:100%;
     max-width:180px;
@@ -386,110 +382,105 @@ const PropertyDataSection = ({selectedProperty, propertyBuildings, isUpdate, set
         
     return (
         <MainContainer>
-            {selectedProperty?.property_code ?
-                <>
-                    <TopSection>
-                        <TopTopSection>
-                            <PropertyName>{`${selectedProperty.property_code} ${selectedProperty.name}`}</PropertyName>
-                            <ActionsButtonContainer>
-                                <ActionsButton onClick={actionsToggler}>
-                                    <ActionsButtonText>Actions</ActionsButtonText>
-                                    <ActionsButtonIconContainer>
-                                        <AiOutlineDown />
-                                    </ActionsButtonIconContainer>
-                                </ActionsButton>
-                                <ButtonContent isActionsOpened={isActionsOpened}>
-                                    <Action><Link href='/add-property'><a style={{color:'#000', textDecoration:'none'}}>Add New</a></Link></Action>
-                                    <Action onClick={updateInitializer}>Modify</Action>
-                                    <LastAction onClick={deleteHandler}>Delete</LastAction>
-                                </ButtonContent>
-                            </ActionsButtonContainer>
-                        </TopTopSection>
-                        <TopBottomSection>
-                            <OptionsArea>
-                                <SelectedItem>Main Data</SelectedItem>
-                                <Item>Attributes</Item>
-                                <Item>Data 2</Item>
-                                <Item>Data 3</Item>
-                            </OptionsArea>
-                        </TopBottomSection>
-                    </TopSection>
-                    <BottomSection>
-                        <PropertyCode>
-                            <Label>Property Code</Label>
-                            {!isUpdate ? <Value>{selectedProperty.property_code}</Value> : <InputValue value={input.property_code} onChange={e => setInput({...input, property_code:e.target.value})}/>}
-                        </PropertyCode>
-                        <Address>
-                            <Label>Address</Label>
-                            {!isUpdate ? <Value>{selectedProperty.address_label}</Value> : <InputValue value={input.address_label} onChange={e => setInput({...input, address_label:e.target.value})}/>}
-                        </Address>
-                        <Longitude>
-                            <Label>Longitude</Label>
-                            {!isUpdate ? <Value>{selectedProperty.longitude || '-'}</Value> : <InputValue value={input.longitude} onChange={e => setInput({...input, longitude:e.target.value})}/>}
-                        </Longitude>
-                        <LegalName>
-                            <Label>Legal Name</Label>
-                            {!isUpdate ? <Value>{selectedProperty.legal_name}</Value> : <InputValue value={input.legal_name} onChange={e => setInput({...input, legal_name:e.target.value})}/>}
-                        </LegalName>
-                        <ZipCode>
-                            <Label>ZipCode</Label>
-                            {!isUpdate ? <Value>{selectedProperty.zip_code}</Value> : <InputValue value={input.zip_code} onChange={e => setInput({...input, zip_code:e.target.value})}/>}
-                        </ZipCode>
-                        <Latitude>
-                            <Label>Latitude</Label>
-                            {!isUpdate ? <Value>{selectedProperty.latitude || '-'}</Value> : <InputValue value={input.latitude} onChange={e => setInput({...input, latitude:e.target.value})}/>}
-                        </Latitude>
-                        <Name>
-                            <Label>Name</Label>
-                            {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, name:e.target.value})}/>}
-                        </Name>
-                        <City>
-                            <Label>City</Label>
-                            {!isUpdate ? <Value>{selectedProperty.postal_address}</Value> : <InputValue value={input.postal_address} onChange={e => setInput({...input, postal_address:e.target.value})}/>}
-                        </City>
-                        <OperationsArea>
-                            <Label>Maintenance Area</Label>
-                            {!isUpdate ? <Value>{selectedProperty.maintenance_area}</Value> : <InputValue value={input.maintenance_area} onChange={e => setInput({...input, maintenance_area:e.target.value})}/>}
-                        </OperationsArea>
-                        <ResponsibleUser>
-                            <Label>Responsible User</Label>
-                            {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, user:e.target.value})}/>}
-                        </ResponsibleUser>
-                        <AdministrativeArea>
-                            <Label>Administrative Area</Label>
-                            {!isUpdate ? <Value>{selectedProperty.administrative_area}</Value> : <InputValue value={input.administrative_area} onChange={e => setInput({...input, administrative_area:e.target.value})}/>}
-                        </AdministrativeArea>
-                        <Area>
-                            <Label>Area</Label>
-                            {!isUpdate ? <Value>{selectedProperty.sum_area_bta}</Value> : <InputValue value={input.sum_area_bta} onChange={e => setInput({...input, sum_area_bta:e.target.value})}/>}
-                        </Area>
-                        <Owner>
-                            <Label>Owner</Label>
-                            {!isUpdate ? <Value>{selectedProperty.owner}</Value> : <InputValue value={input.owner} onChange={e => setInput({...input, owner:e.target.value})}/>}
-                        </Owner>
-                        <Buildings>
-                            {isUpdate ?
-                                <UpdateButtons>
-                                    <UpdateButton onClick={updateHandler}>Update</UpdateButton>
-                                    <CloseButton onClick={() => setIsUpdate(false)}>Close</CloseButton>
-                                </UpdateButtons>
-                                :
-                                <>
-                                    <Label>Buildings</Label>
-                                    <BuildingValue>
-                                        {propertyBuildings.map(building => 
-                                            <Building>
-                                                {building.building_code}
-                                            </Building>
-                                        )}
-                                    </BuildingValue>
-                                </>
-                            }
-                        </Buildings>
-                    </BottomSection>
-                </>
-                : <NoProp>No properties selected</NoProp>
-            }
+            <TopSection>
+                <TopTopSection>
+                    <PropertyName>{`${selectedProperty.property_code} ${selectedProperty.name}`}</PropertyName>
+                    <ActionsButtonContainer>
+                        <ActionsButton onClick={actionsToggler}>
+                            <ActionsButtonText>Actions</ActionsButtonText>
+                            <ActionsButtonIconContainer>
+                                <AiOutlineDown />
+                            </ActionsButtonIconContainer>
+                        </ActionsButton>
+                        <ButtonContent isActionsOpened={isActionsOpened}>
+                            <Action><Link href='/add-property'><a style={{color:'#000', textDecoration:'none'}}>Add New</a></Link></Action>
+                            <Action onClick={updateInitializer}>Modify</Action>
+                            <LastAction onClick={deleteHandler}>Delete</LastAction>
+                        </ButtonContent>
+                    </ActionsButtonContainer>
+                </TopTopSection>
+                <TopBottomSection>
+                    <OptionsArea>
+                        <SelectedItem>Main Data</SelectedItem>
+                        <Item>Attributes</Item>
+                        <Item>Data 2</Item>
+                        <Item>Data 3</Item>
+                    </OptionsArea>
+                </TopBottomSection>
+            </TopSection>
+            <BottomSection>
+                <PropertyCode>
+                    <Label>Property Code</Label>
+                    {!isUpdate ? <Value>{selectedProperty.property_code}</Value> : <InputValue value={input.property_code} onChange={e => setInput({...input, property_code:e.target.value})}/>}
+                </PropertyCode>
+                <Address>
+                    <Label>Address</Label>
+                    {!isUpdate ? <Value>{selectedProperty.address_label}</Value> : <InputValue value={input.address_label} onChange={e => setInput({...input, address_label:e.target.value})}/>}
+                </Address>
+                <Longitude>
+                    <Label>Longitude</Label>
+                    {!isUpdate ? <Value>{selectedProperty.longitude || '-'}</Value> : <InputValue value={input.longitude} onChange={e => setInput({...input, longitude:e.target.value})}/>}
+                </Longitude>
+                <LegalName>
+                    <Label>Legal Name</Label>
+                    {!isUpdate ? <Value>{selectedProperty.legal_name}</Value> : <InputValue value={input.legal_name} onChange={e => setInput({...input, legal_name:e.target.value})}/>}
+                </LegalName>
+                <ZipCode>
+                    <Label>ZipCode</Label>
+                    {!isUpdate ? <Value>{selectedProperty.zip_code}</Value> : <InputValue value={input.zip_code} onChange={e => setInput({...input, zip_code:e.target.value})}/>}
+                </ZipCode>
+                <Latitude>
+                    <Label>Latitude</Label>
+                    {!isUpdate ? <Value>{selectedProperty.latitude || '-'}</Value> : <InputValue value={input.latitude} onChange={e => setInput({...input, latitude:e.target.value})}/>}
+                </Latitude>
+                <Name>
+                    <Label>Name</Label>
+                    {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, name:e.target.value})}/>}
+                </Name>
+                <City>
+                    <Label>City</Label>
+                    {!isUpdate ? <Value>{selectedProperty.postal_address}</Value> : <InputValue value={input.postal_address} onChange={e => setInput({...input, postal_address:e.target.value})}/>}
+                </City>
+                <OperationsArea>
+                    <Label>Maintenance Area</Label>
+                    {!isUpdate ? <Value>{selectedProperty.maintenance_area}</Value> : <InputValue value={input.maintenance_area} onChange={e => setInput({...input, maintenance_area:e.target.value})}/>}
+                </OperationsArea>
+                <ResponsibleUser>
+                    <Label>Responsible User</Label>
+                    {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, user:e.target.value})}/>}
+                </ResponsibleUser>
+                <AdministrativeArea>
+                    <Label>Administrative Area</Label>
+                    {!isUpdate ? <Value>{selectedProperty.administrative_area}</Value> : <InputValue value={input.administrative_area} onChange={e => setInput({...input, administrative_area:e.target.value})}/>}
+                </AdministrativeArea>
+                <Area>
+                    <Label>Area</Label>
+                    {!isUpdate ? <Value>{selectedProperty.sum_area_bta}</Value> : <InputValue value={input.sum_area_bta} onChange={e => setInput({...input, sum_area_bta:e.target.value})}/>}
+                </Area>
+                <Owner>
+                    <Label>Owner</Label>
+                    {!isUpdate ? <Value>{selectedProperty.owner}</Value> : <InputValue value={input.owner} onChange={e => setInput({...input, owner:e.target.value})}/>}
+                </Owner>
+                <Buildings>
+                    {isUpdate ?
+                        <UpdateButtons>
+                            <UpdateButton onClick={updateHandler}>Update</UpdateButton>
+                            <CloseButton onClick={() => setIsUpdate(false)}>Cancel</CloseButton>
+                        </UpdateButtons>
+                        :
+                        <>
+                            <Label>Buildings</Label>
+                            <BuildingValue>
+                                {propertyBuildings.map(building => 
+                                    <Building>
+                                        {building.building_code}
+                                    </Building>
+                                )}
+                            </BuildingValue>
+                        </>
+                    }
+                </Buildings>
+            </BottomSection>
         </MainContainer>
     )
 }

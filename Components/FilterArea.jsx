@@ -59,7 +59,7 @@ const FilterItem = styled.div`
     min-height:70px;
     align-items:center;
     justify-content:flex-start;
-    background-color:${({selectedProperty, currentProperty}) => selectedProperty ? selectedProperty.property_code === currentProperty.property_code ? '#35c7FB' : '' : ''};
+    background-color:${({selectedProperty, currentProperty, selectedBuilding}) => !selectedBuilding._id && selectedProperty ? selectedProperty.property_code === currentProperty.property_code ? '#35c7FB' : '' : ''};
 
     @media screen and (max-width:768px){
         min-height:50px;
@@ -72,7 +72,6 @@ const Buildings = styled.div`
 const Components = styled.div`
     height:100%;
     margin-left:20px;
-    display:${({openedBuilding, currentBuilding}) => openedBuilding === currentBuilding ? 'block' : 'none'};
 
     @media screen and (max-width:768px){
         margin-left:0;
@@ -163,10 +162,24 @@ const NestedFilterItem = styled.div`
     }
 `
 
+const BuildingFilterItem = styled.div`
+    height:70px;
+    display:flex;
+    cursor:pointer;
+    min-height:70px;
+    align-items:center;
+    justify-content:flex-start;
+    background-color:${({selectedBuilding, currentBuilding}) => selectedBuilding._id ? selectedBuilding._id === currentBuilding._id ? '#35c7FB' : '' : ''};
+
+    @media screen and (max-width:768px){
+        min-height:50px;
+    }
+`
+
 
 // Main Function
-const FilterArea = ({selectedProperty, properties, propertyContentOpener, openedProperty, buildings, buildingContentOpener, openedBuilding, setIsComponentsOpened, isComponentsOpened, components, componentContentOpener, activities, openedComponent, selectedPropertyHandler}) => {
-  return (
+const FilterArea = ({selectedProperty, properties, propertyContentOpener, openedProperty, buildings, buildingContentOpener, openedBuilding, setIsComponentsOpened, isComponentsOpened, components, componentContentOpener, activities, openedComponent, selectedPropertyHandler, selectedBuilding, selectedBuildingHandler}) => {
+      return (
     <FilterContainer>
         <SearchArea>
             <SearchInput placeholder='Quick Filter'/>
@@ -174,7 +187,7 @@ const FilterArea = ({selectedProperty, properties, propertyContentOpener, opened
         <FilterContentArea>
             {properties[0].property_code ? properties.map(property => (
                 <>
-                    <FilterItem key={property._id} selectedProperty={selectedProperty} currentProperty={property}>
+                    <FilterItem key={property._id} selectedProperty={selectedProperty} currentProperty={property} selectedBuilding={selectedBuilding}>
                         <ArrowIconContainer onClick={() => propertyContentOpener(property.property_code)}>
                             {openedProperty === property.property_code ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
                         </ArrowIconContainer>
@@ -183,12 +196,12 @@ const FilterArea = ({selectedProperty, properties, propertyContentOpener, opened
                     <Buildings openedProperty={openedProperty} currentProperty={property.property_code}>
                         {buildings[0].building_code ? buildings.map(building => (
                             <>
-                                <NestedFilterItem key={building._id}>
+                                <BuildingFilterItem key={building._id} selectedBuilding={selectedBuilding} currentBuilding={building}>
                                     <ArrowIconContainer onClick={() => buildingContentOpener(building.building_code)}>
                                         {openedBuilding === building.building_code ? <AiOutlineDown /> : <MdOutlineArrowForwardIos />}
                                     </ArrowIconContainer>
-                                    <Name>{`${building.building_code}`}</Name>
-                                </NestedFilterItem>
+                                    <Name onClick={() => selectedBuildingHandler(building._id)}>{`${building.building_code}`}</Name>
+                                </BuildingFilterItem>
                                 {openedBuilding === building.building_code &&                        
                                     <BuildingContent>
                                         <ComponentContainerFilterItem>

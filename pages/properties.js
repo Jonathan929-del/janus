@@ -7,6 +7,7 @@ import Layout from '../Components/Layout';
 import FilterArea from '../Components/FilterArea';
 import PropertyDataSection from '../Components/PropertyDataSection';
 import { RiContactsBookLine } from 'react-icons/ri';
+import BuildingData from '../Components/BuildingData';
 
 
 // Styles
@@ -32,6 +33,11 @@ const FilterSection = styled.div`
 `
 const DataSection = styled.div`
     width:100%;
+`
+const NoProp = styled.div`
+    width:100%;
+    padding:20px 0;
+    text-align:center;
 `
 
 
@@ -98,21 +104,32 @@ const Properties = () => {
 
     // Fetching property data
     const [propertyBuildings, setPropertyBuildings] = useState([{}]);
+    const [isUpdate, setIsUpdate] = useState(false);
     const selectedPropertyHandler = async id => {
         try {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${id}`);
             setSelectedProperty(res.data);
             Cookie.set('property', id);
             setIsUpdate(false);
+            setSelectedBuilding({});
         } catch (err) {
             console.log(err);
         }
     };
 
 
-    // Updating property
-    const [isUpdate, setIsUpdate] = useState(false);
-
+    // Fetching building data
+    const [isBuildingUpdate, setIsBuildingUpdate] = useState(false);
+    const [selectedBuilding, setSelectedBuilding] = useState({});
+    const selectedBuildingHandler = async id => {
+        try {
+            const res = await axios.get(`https://janus-server-side.herokuapp.com/buildings/building-id/${id}`);
+            setSelectedBuilding(res.data);
+            setIsBuildingUpdate(false);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <Layout page='properties'>
@@ -133,16 +150,29 @@ const Properties = () => {
                         openedComponent={openedComponent}
                         selectedPropertyHandler={selectedPropertyHandler}
                         selectedProperty={selectedProperty}
+                        selectedBuilding={selectedBuilding}
+                        selectedBuildingHandler={selectedBuildingHandler}
                     />
                 </FilterSection>
                 <DataSection>
-                    <PropertyDataSection
-                        selectedProperty={selectedProperty}
-                        propertyBuildings={propertyBuildings}
-                        isUpdate={isUpdate}
-                        setIsUpdate={setIsUpdate}
-                        setSelectedProperty={setSelectedProperty}
-                    />
+                {
+                    !selectedBuilding?._id
+                        ? selectedProperty
+                            ?   <PropertyDataSection
+                                    selectedProperty={selectedProperty}
+                                    setSelectedProperty={setSelectedProperty}
+                                    propertyBuildings={propertyBuildings}
+                                    isUpdate={isUpdate}
+                                    setIsUpdate={setIsUpdate}
+                                />
+                            : <NoProp>No properties selected</NoProp>
+                        : <BuildingData 
+                            selectedBuilding={selectedBuilding}
+                            setSelectedBuilding={setSelectedBuilding}
+                            isBuildingUpdate={isBuildingUpdate}
+                            setIsBuildingUpdate={setIsBuildingUpdate}
+                        />
+                    }
                 </DataSection>
             </PropertiesContainer>
         </Layout>

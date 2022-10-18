@@ -187,7 +187,6 @@ const AddProperty = () => {
         <AddNewPropertyContainer>
             <TopSection>
                 <Heading>Add New Property</Heading>
-                <CloseIcon onClick={() => setIsCreateOpened(false)}><BiArrowBack style={{marginRight:'5px'}}/>Back to properties</CloseIcon>
             </TopSection>
             <BottomSection>
                 <PropertyCode>
