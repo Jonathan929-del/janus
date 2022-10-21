@@ -400,7 +400,7 @@ const CloseButton = styled.button`
 
 
 // Main Function
-const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpdate, setIsComponentUpdate, selectedBuilding, setSelectedBuilding}) => {
+const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpdate, setIsComponentUpdate, selectedBuilding, setSelectedBuilding, selectedBuildingHandler}) => {
 
 
     // Actions opener
@@ -463,9 +463,13 @@ const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpda
 
 
     // Back button handler
-    const backButtonHandler = () => {
-        setSelectedBuilding(selectedBuilding);
-        setSelectedComponent({});
+    const backButtonHandler = async () => {
+        try {
+            const res = await axios.get(`https://janus-server-side.herokuapp.com/buildings/building-code/${selectedComponent.building_code}`);
+            selectedBuildingHandler(res.data._id);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
 

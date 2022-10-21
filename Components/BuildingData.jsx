@@ -1,6 +1,7 @@
 // Imports
 import axios from 'axios';
 import Link from 'next/link';
+import Cookie from 'js-cookie';
 import styled from 'styled-components';
 import {useState, useEffect} from 'react';
 import {AiOutlineDown} from 'react-icons/ai';
@@ -343,7 +344,7 @@ const CloseButton = styled.button`
 
 
 // Main Function
-const BuildingData = ({selectedBuilding, isBuildingUpdate, setIsBuildingUpdate, setSelectedBuilding}) => {
+const BuildingData = ({selectedBuilding, isBuildingUpdate, setIsBuildingUpdate, setSelectedBuilding, selectedPropertyHandler}) => {
 
 
     // Actions opener
@@ -407,11 +408,22 @@ const BuildingData = ({selectedBuilding, isBuildingUpdate, setIsBuildingUpdate, 
     }, []);
 
 
+    // Back button handler
+    const backButtonHandler = async () => {
+        try {
+            const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-code/${JSON.parse(selectedBuilding.property_code)}`);
+            selectedPropertyHandler(res.data._id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
     return (
         <MainContainer>
             <TopSection>
                 <TopTopSection>
-                    <BackButton onClick={() => setSelectedBuilding({})}>Back to Property</BackButton>
+                    <BackButton onClick={backButtonHandler}>Back to Property</BackButton>
                     <BuildingName>{`${selectedBuilding.building_code}`}</BuildingName>
                     <ActionsButtonContainer>
                         <ActionsButton onClick={actionsToggler}>

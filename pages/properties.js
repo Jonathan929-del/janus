@@ -147,7 +147,7 @@ const Properties = () => {
             }
         }
         dataFetcher();
-    }, [FilterArea, selectedProperty, selectedBuilding, selectedComponent]);
+    }, [selectedProperty, selectedBuilding, selectedComponent]);
     
 
     return (
@@ -190,6 +190,7 @@ const Properties = () => {
                                 setSelectedBuilding={setSelectedBuilding}
                                 isBuildingUpdate={isBuildingUpdate}
                                 setIsBuildingUpdate={setIsBuildingUpdate}
+                                selectedPropertyHandler={selectedPropertyHandler}
                             />
                         : <ComponentData
                             selectedComponent={selectedComponent}
@@ -198,6 +199,7 @@ const Properties = () => {
                             setIsComponentUpdate={setIsComponentUpdate}
                             selectedBuilding={selectedBuilding}
                             setSelectedBuilding={setSelectedBuilding}
+                            selectedBuildingHandler={selectedBuildingHandler}
                         />
                     }
                 </DataSection>
