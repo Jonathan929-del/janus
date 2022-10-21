@@ -15,7 +15,7 @@ const MainContainer = styled.div`
 `
 const TopSection = styled.div`
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     flex-direction:column;
     padding:30px 20px 0 0;
     justify-content:space-between;
@@ -157,11 +157,10 @@ const LastAction = styled.div`
 const BottomSection = styled.div`
     gap:20px;
     width:100%;
-    height:100%;
     display:grid;
     max-width:1000px;
-    padding:50px 20px 20px 0;
-    margin:auto;
+    max-height:800px;
+    padding:30px 20px 20px 0;
     grid-template-rows:repeat(5, 1fr);
     grid-template-columns:repeat(4, 1fr);
     grid-template-areas:'propertyCode address longitude buildings'
@@ -311,7 +310,7 @@ const UpdateButton = styled.button`
     }
 `
 const CloseButton = styled.button`
-        border:none;
+    border:none;
     outline:none;
     color:#fff;
     cursor:pointer;
@@ -384,7 +383,7 @@ const PropertyDataSection = ({selectedProperty, propertyBuildings, isUpdate, set
         <MainContainer>
             <TopSection>
                 <TopTopSection>
-                    <PropertyName>{`${selectedProperty.property_code} ${selectedProperty.name}`}</PropertyName>
+                    <PropertyName>{selectedProperty.property_code ? `${selectedProperty.property_code} ${selectedProperty.name}` : ''}</PropertyName>
                     <ActionsButtonContainer>
                         <ActionsButton onClick={actionsToggler}>
                             <ActionsButtonText>Actions</ActionsButtonText>

@@ -1,9 +1,9 @@
 // Imports
 import axios from 'axios';
+import Link from 'next/link';
 import styled from 'styled-components';
 import {useState, useEffect} from 'react';
 import {AiOutlineDown} from 'react-icons/ai';
-import Link from 'next/link';
 
 
 // Styles
@@ -15,9 +15,9 @@ const MainContainer = styled.div`
 `
 const TopSection = styled.div`
     display:flex;
-    align-items:center;
     flex-direction:column;
     padding:30px 20px 0 0;
+    align-items:flex-start;
     justify-content:space-between;
     border-bottom:1px solid #ccc;
 `
@@ -167,10 +167,9 @@ const BackButton = styled.button`
 const BottomSection = styled.div`
     gap:20px;
     width:100%;
-    margin:auto;
-    height:100vh;
     display:grid;
     padding:50px;
+    max-height:600px;
     max-width:1000px;
     grid-template-rows:${({isBuildingUpdate}) => isBuildingUpdate ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)'};
     grid-template-columns:${({isBuildingUpdate}) => isBuildingUpdate ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)'};

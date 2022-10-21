@@ -8,6 +8,7 @@ import FilterArea from '../Components/FilterArea';
 import PropertyDataSection from '../Components/PropertyDataSection';
 import { RiContactsBookLine } from 'react-icons/ri';
 import BuildingData from '../Components/BuildingData';
+import ComponentData from '../Components/ComponentData';
 
 
 // Styles
@@ -126,6 +127,21 @@ const Properties = () => {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/buildings/building-id/${id}`);
             setSelectedBuilding(res.data);
             setIsBuildingUpdate(false);
+            setSelectedComponent({});
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
+    // Fetching component data
+    const [isComponentUpdate, setIsComponentUpdate] = useState(false);
+    const [selectedComponent, setSelectedComponent] = useState({});
+    const selectedComponentHandler = async id => {
+        try {
+            const res = await axios.get(`https://janus-server-side.herokuapp.com/components/component-id/${id}`);
+            setSelectedComponent(res.data);
+            setIsComponentUpdate(false);
         } catch (err) {
             console.log(err);
         }
@@ -152,25 +168,36 @@ const Properties = () => {
                         selectedProperty={selectedProperty}
                         selectedBuilding={selectedBuilding}
                         selectedBuildingHandler={selectedBuildingHandler}
+                        selectedComponent={selectedComponent}
+                        selectedComponentHandler={selectedComponentHandler}
                     />
                 </FilterSection>
                 <DataSection>
                 {
-                    !selectedBuilding?._id
-                        ? selectedProperty
-                            ?   <PropertyDataSection
-                                    selectedProperty={selectedProperty}
-                                    setSelectedProperty={setSelectedProperty}
-                                    propertyBuildings={propertyBuildings}
-                                    isUpdate={isUpdate}
-                                    setIsUpdate={setIsUpdate}
-                                />
-                            : <NoProp>No properties selected</NoProp>
-                        : <BuildingData 
+                    !selectedComponent?._id
+                        ? !selectedBuilding?._id
+                            ? selectedProperty
+                                ?   <PropertyDataSection
+                                        selectedProperty={selectedProperty}
+                                        setSelectedProperty={setSelectedProperty}
+                                        propertyBuildings={propertyBuildings}
+                                        isUpdate={isUpdate}
+                                        setIsUpdate={setIsUpdate}
+                                    />
+                                : <NoProp>No properties selected</NoProp>
+                            : <BuildingData 
+                                selectedBuilding={selectedBuilding}
+                                setSelectedBuilding={setSelectedBuilding}
+                                isBuildingUpdate={isBuildingUpdate}
+                                setIsBuildingUpdate={setIsBuildingUpdate}
+                            />
+                        : <ComponentData
+                            selectedComponent={selectedComponent}
+                            setSelectedComponent={setSelectedComponent}
+                            isComponentUpdate={isComponentUpdate}
+                            setIsComponentUpdate={setIsComponentUpdate}
                             selectedBuilding={selectedBuilding}
                             setSelectedBuilding={setSelectedBuilding}
-                            isBuildingUpdate={isBuildingUpdate}
-                            setIsBuildingUpdate={setIsBuildingUpdate}
                         />
                     }
                 </DataSection>
