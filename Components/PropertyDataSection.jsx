@@ -410,11 +410,11 @@ const PropertyDataSection = ({selectedProperty, propertyBuildings, isUpdate, set
             <BottomSection>
                 <PropertyCode>
                     <Label>Property Code</Label>
-                    {!isUpdate ? <Value>{selectedProperty.property_code}</Value> : <InputValue value={input.property_code} onChange={e => setInput({...input, property_code:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.property_code || '-'}</Value> : <InputValue value={input.property_code} onChange={e => setInput({...input, property_code:e.target.value})}/>}
                 </PropertyCode>
                 <Address>
                     <Label>Address</Label>
-                    {!isUpdate ? <Value>{selectedProperty.address_label}</Value> : <InputValue value={input.address_label} onChange={e => setInput({...input, address_label:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.address_label || '-'}</Value> : <InputValue value={input.address_label} onChange={e => setInput({...input, address_label:e.target.value})}/>}
                 </Address>
                 <Longitude>
                     <Label>Longitude</Label>
@@ -422,11 +422,11 @@ const PropertyDataSection = ({selectedProperty, propertyBuildings, isUpdate, set
                 </Longitude>
                 <LegalName>
                     <Label>Legal Name</Label>
-                    {!isUpdate ? <Value>{selectedProperty.legal_name}</Value> : <InputValue value={input.legal_name} onChange={e => setInput({...input, legal_name:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.legal_name || '-'}</Value> : <InputValue value={input.legal_name} onChange={e => setInput({...input, legal_name:e.target.value})}/>}
                 </LegalName>
                 <ZipCode>
                     <Label>ZipCode</Label>
-                    {!isUpdate ? <Value>{selectedProperty.zip_code}</Value> : <InputValue value={input.zip_code} onChange={e => setInput({...input, zip_code:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.zip_code || '-'}</Value> : <InputValue value={input.zip_code} onChange={e => setInput({...input, zip_code:e.target.value})}/>}
                 </ZipCode>
                 <Latitude>
                     <Label>Latitude</Label>
@@ -434,31 +434,31 @@ const PropertyDataSection = ({selectedProperty, propertyBuildings, isUpdate, set
                 </Latitude>
                 <Name>
                     <Label>Name</Label>
-                    {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, name:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.name || '-'}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, name:e.target.value})}/>}
                 </Name>
                 <City>
                     <Label>City</Label>
-                    {!isUpdate ? <Value>{selectedProperty.postal_address}</Value> : <InputValue value={input.postal_address} onChange={e => setInput({...input, postal_address:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.postal_address || '-'}</Value> : <InputValue value={input.postal_address} onChange={e => setInput({...input, postal_address:e.target.value})}/>}
                 </City>
                 <OperationsArea>
                     <Label>Maintenance Area</Label>
-                    {!isUpdate ? <Value>{selectedProperty.maintenance_area}</Value> : <InputValue value={input.maintenance_area} onChange={e => setInput({...input, maintenance_area:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.maintenance_area || '-'}</Value> : <InputValue value={input.maintenance_area} onChange={e => setInput({...input, maintenance_area:e.target.value})}/>}
                 </OperationsArea>
                 <ResponsibleUser>
                     <Label>Responsible User</Label>
-                    {!isUpdate ? <Value>{selectedProperty.name}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, user:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.name || '-'}</Value> : <InputValue value={input.name} onChange={e => setInput({...input, user:e.target.value})}/>}
                 </ResponsibleUser>
                 <AdministrativeArea>
                     <Label>Administrative Area</Label>
-                    {!isUpdate ? <Value>{selectedProperty.administrative_area}</Value> : <InputValue value={input.administrative_area} onChange={e => setInput({...input, administrative_area:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.administrative_area || '-'}</Value> : <InputValue value={input.administrative_area} onChange={e => setInput({...input, administrative_area:e.target.value})}/>}
                 </AdministrativeArea>
                 <Area>
                     <Label>Area</Label>
-                    {!isUpdate ? <Value>{selectedProperty.sum_area_bta}</Value> : <InputValue value={input.sum_area_bta} onChange={e => setInput({...input, sum_area_bta:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.sum_area_bta || '-'}</Value> : <InputValue value={input.sum_area_bta} onChange={e => setInput({...input, sum_area_bta:e.target.value})}/>}
                 </Area>
                 <Owner>
                     <Label>Owner</Label>
-                    {!isUpdate ? <Value>{selectedProperty.owner}</Value> : <InputValue value={input.owner} onChange={e => setInput({...input, owner:e.target.value})}/>}
+                    {!isUpdate ? <Value>{selectedProperty.owner || '-'}</Value> : <InputValue value={input.owner} onChange={e => setInput({...input, owner:e.target.value})}/>}
                 </Owner>
                 <Buildings>
                     {isUpdate ?

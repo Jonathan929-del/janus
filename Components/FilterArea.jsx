@@ -77,13 +77,6 @@ const Components = styled.div`
         margin-left:0;
     }
 `
-const Activities = styled.div`
-    margin-left:70px;
-
-    @media screen and (max-width:768px){
-        margin-left:40px;
-    }
-`
 const NoCom = styled.p`
     font-size:12px;
     margin-left:-10px;
@@ -94,7 +87,7 @@ const NoCom = styled.p`
     }
 `
 const BuildingContent = styled.div`
-    margin-left:30px;
+    margin-left:20px;
 `
 const ArrowIconContainer = styled.div`
     height:100%;
@@ -152,6 +145,7 @@ const NestedFilterItem = styled.div`
     display:flex;
     cursor:pointer;
     min-height:70px;
+    margin-left:30px;
     align-items:center;
     justify-content:flex-start;
     background-color:${({selectedComponent, currentComponent}) => selectedComponent._id ? selectedComponent.component_code === currentComponent.component_code ? '#35c7FB' : '' : ''};
@@ -177,7 +171,7 @@ const BuildingFilterItem = styled.div`
 
 
 // Main Function
-const FilterArea = ({selectedProperty, properties, propertyContentOpener, openedProperty, buildings, buildingContentOpener, openedBuilding, setIsComponentsOpened, isComponentsOpened, components, componentContentOpener, activities, openedComponent, selectedPropertyHandler, selectedBuilding, selectedBuildingHandler, selectedComponent, selectedComponentHandler}) => {
+const FilterArea = ({selectedProperty, properties, propertyContentOpener, openedProperty, buildings, buildingContentOpener, openedBuilding, setIsComponentsOpened, isComponentsOpened, components, selectedPropertyHandler, selectedBuilding, selectedBuildingHandler, selectedComponent, selectedComponentHandler}) => {
       return (
     <FilterContainer>
         <SearchArea>
@@ -214,20 +208,8 @@ const FilterArea = ({selectedProperty, properties, propertyContentOpener, opened
                                                 {components.length > 0 ? components.map(component => (
                                                     <>
                                                         <NestedFilterItem key={component._id} selectedComponent={selectedComponent} currentComponent={component}>
-                                                            <ArrowIconContainer onClick={() => componentContentOpener(component.component_code)}>
-                                                                <MdOutlineArrowForwardIos />
-                                                            </ArrowIconContainer>
                                                             <Name onClick={() => selectedComponentHandler(component._id)}>{`${component.component_code}`}</Name>
                                                         </NestedFilterItem>
-                                                        {openedComponent === component.component_code &&
-                                                            <Activities>
-                                                                {activities.length > 0 ? activities.map(activity => (
-                                                                    <FilterItem key={activity._id} selectedProperty={selectedProperty} currentProperty={property} selectedBuilding={selectedBuilding} selectedComponent={selectedComponent}>
-                                                                        <Name>{`${activity.user}`}</Name>
-                                                                    </FilterItem>
-                                                                )) : <NoCom>No Activities to Show</NoCom>}
-                                                            </Activities>
-                                                        }
                                                     </>
                                                 )) : <NoCom>No Components to Show</NoCom>}
                                             </Components>

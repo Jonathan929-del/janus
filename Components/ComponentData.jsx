@@ -297,6 +297,7 @@ const InputValue = styled.input`
 `
 const ActivitesValue = styled.div`
     height:90%;
+    width:100%;
     padding:10px;
     font-size:14px;
     overflow-y:scroll;
@@ -304,11 +305,12 @@ const ActivitesValue = styled.div`
     background-color:#c3c3c3;
 
     &::-webkit-scrollbar{
-        width:7px;
+        width:5px;
+        border:1px solid #000;
     }
     &::-webkit-scrollbar-thumb{
         border-radius:5px;
-        background-color:#c3c3c3;
+        background-color:#000;
     }
 
     @media screen and (max-width:992px){
@@ -413,7 +415,9 @@ const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpda
     const activitiesFetcher = async () => {
         try {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/activities/${selectedComponent.component_code}`);
-            setActivities(res.data);
+            setActivities(res.data.sort((a, b) => {
+                return new Date(b.date) - new Date(a.date);
+            }));
         } catch (err) {
             console.log(err);
         }
@@ -449,13 +453,13 @@ const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpda
         setInput({
             component_code:selectedComponent.component_code || '-',
             name:selectedComponent.name || '-',
-            u_System:selectedComponent.U_System || '-',
+            u_System:selectedComponent.u_System || '-',
             position_of_code:selectedComponent.position_of_code || '-',
             contracted:selectedComponent.contracted || '-',
             responsible_user:selectedComponent.responsible_user || '-'
         });
         activitiesFetcher();
-    }, [selectedComponent]);
+    }, []);
 
 
     // Back button handler
@@ -566,9 +570,8 @@ const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpda
                             <Label>Activites</Label>
                             <ActivitesValue>{activities.map(activity =>
                                 <Activity onClick={() => selectedActivityHandler(activity._id)} selectedActivity={selectedActivity} currentActivity={activity}>
-                                    <ActivityItem>{activity.activity || '-'}</ActivityItem>
                                     <ActivityItem>{moment(activity.date).format('YYYY-MM-DD')}</ActivityItem>
-                                    <ActivityItem>{activity.user}</ActivityItem>
+                                    <ActivityItem>{activity.activity || '-'}</ActivityItem>
                                 </Activity>
                             )}</ActivitesValue>
                         </Activites>

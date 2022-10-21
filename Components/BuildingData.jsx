@@ -403,7 +403,8 @@ const BuildingData = ({selectedBuilding, isBuildingUpdate, setIsBuildingUpdate, 
             geo_fence:selectedBuilding.geo_fence || '-'
         });
         componentsFetcher();
-    }, [selectedBuilding]);
+        setSelectedBuilding(selectedBuilding);
+    }, []);
 
 
     return (

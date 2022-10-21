@@ -50,29 +50,12 @@ const Properties = () => {
     const [properties, setProperties] = useState([{}]);
     const [buildings, setBuildings] = useState([{}]);
     const [components, setComponents] = useState([{}]);
-    const [activities, setActivities] = useState([{}]);
     const [selectedProperty, setSelectedProperty] = useState({});
-    useEffect(() => {
-        const dataFetcher = async () => {
-            try {
-                const propertiesRes = await axios.get('https://janus-server-side.herokuapp.com/properties');
-                setProperties(propertiesRes.data.sort((a, b) => a.property_code - b.property_code));
-                const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${Cookie.get('property')}`);
-                Cookie.get('property') && setSelectedProperty(res.data);
-                const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${selectedProperty.property_code}`);
-                setPropertyBuildings(buildingsRes.data);
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        dataFetcher();
-    }, [FilterArea, selectedProperty]);
-
-
+    
+    
     // Opening sub contents
     const [openedProperty, setOpenedProperty] = useState();
     const [openedBuilding, setOpenedBuilding] = useState();
-    const [openedComponent, setOpenedComponent] = useState();
     const [isComponentsOpened, setIsComponentsOpened] = useState(false);
     const propertyContentOpener = async id => {
         try {
@@ -92,15 +75,6 @@ const Properties = () => {
             console.log(err);
         }
     };
-    const componentContentOpener = async id => {
-        try {
-            openedComponent === '' ? setOpenedComponent(id) : openedComponent === id ? setOpenedComponent('') : setOpenedComponent(id);
-            const activitiesRes = await axios.get(`https://janus-server-side.herokuapp.com/activities/${id}`);
-            setActivities(activitiesRes.data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
 
 
     // Fetching property data
@@ -110,9 +84,12 @@ const Properties = () => {
         try {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${id}`);
             setSelectedProperty(res.data);
-            Cookie.set('property', id);
             setIsUpdate(false);
+            Cookie.set('property', id);
+            Cookie.remove('building');
+            Cookie.remove('component');
             setSelectedBuilding({});
+            setSelectedComponent({});
         } catch (err) {
             console.log(err);
         }
@@ -127,7 +104,9 @@ const Properties = () => {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/buildings/building-id/${id}`);
             setSelectedBuilding(res.data);
             setIsBuildingUpdate(false);
+            Cookie.set('building', id);
             setSelectedComponent({});
+            Cookie.remove('component');
         } catch (err) {
             console.log(err);
         }
@@ -142,10 +121,34 @@ const Properties = () => {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/components/component-id/${id}`);
             setSelectedComponent(res.data);
             setIsComponentUpdate(false);
+            Cookie.set('component', id);
         } catch (err) {
             console.log(err);
         }
     };
+
+
+    // Use effect
+    useEffect(() => {
+        const dataFetcher = async () => {
+            try {
+                const propertiesRes = await axios.get('https://janus-server-side.herokuapp.com/properties');
+                setProperties(propertiesRes.data.sort((a, b) => a.property_code - b.property_code));
+                const res = Cookie.get('property') && await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${Cookie.get('property')}`);
+                Cookie.get('property') && setSelectedProperty(res.data);
+                const buildingRes = Cookie.get('building') && await axios.get(`https://janus-server-side.herokuapp.com/buildings/building-id/${Cookie.get('building')}`);
+                Cookie.get('building') && setSelectedBuilding(buildingRes.data);
+                const componentRes = Cookie.get('component') && await axios.get(`https://janus-server-side.herokuapp.com/components/component-id/${Cookie.get('component')}`);
+                Cookie.get('component') && setSelectedComponent(componentRes.data);
+                const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${selectedProperty.property_code}`);
+                setPropertyBuildings(buildingsRes.data);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        dataFetcher();
+    }, [FilterArea, selectedProperty, selectedBuilding, selectedComponent]);
+    
 
     return (
         <Layout page='properties'>
@@ -161,9 +164,6 @@ const Properties = () => {
                         setIsComponentsOpened={setIsComponentsOpened}
                         isComponentsOpened={isComponentsOpened}
                         components={components}
-                        componentContentOpener={componentContentOpener}
-                        activities={activities}
-                        openedComponent={openedComponent}
                         selectedPropertyHandler={selectedPropertyHandler}
                         selectedProperty={selectedProperty}
                         selectedBuilding={selectedBuilding}
