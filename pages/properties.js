@@ -5,10 +5,9 @@ import styled from 'styled-components';
 import {useEffect, useState} from 'react';
 import Layout from '../Components/Layout';
 import FilterArea from '../Components/FilterArea';
-import PropertyDataSection from '../Components/PropertyDataSection';
-import { RiContactsBookLine } from 'react-icons/ri';
 import BuildingData from '../Components/BuildingData';
 import ComponentData from '../Components/ComponentData';
+import PropertyDataSection from '../Components/PropertyDataSection';
 
 
 // Styles
@@ -66,11 +65,31 @@ const Properties = () => {
             console.log(err);
         }
     };
+    const defaultOpenedProperty = async id => {
+        try {
+            setOpenedProperty(id);
+            const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${id}`);
+            setBuildings(buildingsRes.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
     const buildingContentOpener = async id => {
         try {
             openedBuilding === '' ? setOpenedBuilding(id) : openedBuilding === id ? setOpenedBuilding('') : setOpenedBuilding(id);
             const componentsRes = await axios.get(`https://janus-server-side.herokuapp.com/components/${id}`);
             setComponents(componentsRes.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    const defaultOpenedBuilding = async id => {
+        try {
+            defaultOpenedProperty(selectedComponent.property_code);
+            setOpenedBuilding(id);
+            const componentsRes = await axios.get(`https://janus-server-side.herokuapp.com/components/${id}`);
+            setComponents(componentsRes.data);
+            setIsComponentsOpened(true);
         } catch (err) {
             console.log(err);
         }
@@ -83,8 +102,8 @@ const Properties = () => {
     const selectedPropertyHandler = async id => {
         try {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/properties/property-id/${id}`);
-            setSelectedProperty(res.data);
             setIsUpdate(false);
+            setSelectedProperty(res.data);
             Cookie.set('property', id);
             Cookie.remove('building');
             Cookie.remove('component');
@@ -102,11 +121,13 @@ const Properties = () => {
     const selectedBuildingHandler = async id => {
         try {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/buildings/building-id/${id}`);
-            setSelectedBuilding(res.data);
             setIsBuildingUpdate(false);
+            setSelectedBuilding(res.data);
             Cookie.set('building', id);
-            setSelectedComponent({});
             Cookie.remove('component');
+            Cookie.remove('property');
+            setSelectedComponent({});
+            setSelectedProperty({});
         } catch (err) {
             console.log(err);
         }
@@ -119,9 +140,13 @@ const Properties = () => {
     const selectedComponentHandler = async id => {
         try {
             const res = await axios.get(`https://janus-server-side.herokuapp.com/components/component-id/${id}`);
-            setSelectedComponent(res.data);
             setIsComponentUpdate(false);
+            setSelectedComponent(res.data);
             Cookie.set('component', id);
+            Cookie.remove('property');
+            Cookie.remove('building');
+            setSelectedProperty({});
+            setSelectedBuilding({});
         } catch (err) {
             console.log(err);
         }
@@ -140,15 +165,22 @@ const Properties = () => {
                 Cookie.get('building') && setSelectedBuilding(buildingRes.data);
                 const componentRes = Cookie.get('component') && await axios.get(`https://janus-server-side.herokuapp.com/components/component-id/${Cookie.get('component')}`);
                 Cookie.get('component') && setSelectedComponent(componentRes.data);
-                const buildingsRes = await axios.get(`https://janus-server-side.herokuapp.com/buildings/${selectedProperty.property_code}`);
-                setPropertyBuildings(buildingsRes.data);
+                const buildingsRes = selectedProperty?.property_code && await axios.get(`https://janus-server-side.herokuapp.com/buildings/${selectedProperty.property_code}`);
+                selectedProperty.property_code && setPropertyBuildings(buildingsRes.data);
             } catch (err) {
                 console.log(err);
             }
         }
         dataFetcher();
-    }, [selectedProperty, selectedBuilding, selectedComponent]);
+    }, [Cookie.get('property'), Cookie.get('building'), Cookie.get('component')]);
     
+
+
+    // List use effect
+    useEffect(() => {
+        selectedBuilding._id && defaultOpenedProperty(selectedBuilding.property_code);
+        selectedComponent._id && defaultOpenedBuilding(selectedComponent.building_code);
+    }, [selectedBuilding, selectedComponent]);
 
     return (
         <Layout page='properties'>

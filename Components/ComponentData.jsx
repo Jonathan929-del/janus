@@ -459,7 +459,7 @@ const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpda
             responsible_user:selectedComponent.responsible_user || '-'
         });
         activitiesFetcher();
-    }, []);
+    }, [selectedComponent]);
 
 
     // Back button handler

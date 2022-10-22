@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {AiOutlineDown} from 'react-icons/ai';
 import {MdOutlineArrowForwardIos} from 'react-icons/md';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useEffect } from 'react';
 
 
 // Styles
@@ -171,8 +172,8 @@ const BuildingFilterItem = styled.div`
 
 
 // Main Function
-const FilterArea = ({selectedProperty, properties, propertyContentOpener, openedProperty, buildings, buildingContentOpener, openedBuilding, setIsComponentsOpened, isComponentsOpened, components, selectedPropertyHandler, selectedBuilding, selectedBuildingHandler, selectedComponent, selectedComponentHandler}) => {
-      return (
+const FilterArea = ({selectedProperty, properties, propertyContentOpener, openedProperty, buildings, buildingContentOpener, openedBuilding, setIsComponentsOpened, isComponentsOpened, components, selectedPropertyHandler, selectedBuilding, selectedBuildingHandler, selectedComponent, selectedComponentHandler}) => {    
+    return (
     <FilterContainer>
         <SearchArea>
             <SearchInput placeholder='Quick Filter'/>

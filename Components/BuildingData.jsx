@@ -1,7 +1,6 @@
 // Imports
 import axios from 'axios';
 import Link from 'next/link';
-import Cookie from 'js-cookie';
 import styled from 'styled-components';
 import {useState, useEffect} from 'react';
 import {AiOutlineDown} from 'react-icons/ai';
