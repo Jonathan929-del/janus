@@ -182,6 +182,7 @@ const Properties = () => {
         selectedComponent._id && defaultOpenedBuilding(selectedComponent.building_code);
     }, [selectedBuilding, selectedComponent]);
 
+    
     return (
         <Layout page='properties'>
             <PropertiesContainer>

@@ -116,6 +116,7 @@ const CreateActivity = ({isActivityCreate, setIsActivityCreate, selectedComponen
         try {
             await axios.post('https://janus-server-side.herokuapp.com/activities', input);
             setIsActivityCreate(false);
+            window.location.reload();
         } catch (err) {
             console.log(err);
         }
