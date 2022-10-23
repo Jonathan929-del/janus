@@ -115,7 +115,7 @@ const ListIconContainer = styled.div`
         font-size:20px;
     }
 `
-const ListText = styled.p`
+const ListText = styled.a`
     height:100%;
     display:flex;
     margin-left:10px;
