@@ -85,7 +85,7 @@ const Properties = () => {
     };
     const defaultOpenedBuilding = async id => {
         try {
-            defaultOpenedProperty(selectedComponent.property_code);
+            defaultOpenedProperty(selectedComponent?.property_code);
             setOpenedBuilding(id);
             const componentsRes = await axios.get(`https://janus-server-side.herokuapp.com/components/${id}`);
             setComponents(componentsRes.data);
@@ -165,8 +165,8 @@ const Properties = () => {
                 Cookie.get('building') && setSelectedBuilding(buildingRes.data);
                 const componentRes = Cookie.get('component') && await axios.get(`https://janus-server-side.herokuapp.com/components/component-id/${Cookie.get('component')}`);
                 Cookie.get('component') && setSelectedComponent(componentRes.data);
-                const buildingsRes = selectedProperty?.property_code && await axios.get(`https://janus-server-side.herokuapp.com/buildings/${selectedProperty.property_code}`);
-                selectedProperty.property_code && setPropertyBuildings(buildingsRes.data);
+                const buildingsRes = selectedProperty?.property_code && await axios.get(`https://janus-server-side.herokuapp.com/buildings/${selectedProperty?.property_code}`);
+                selectedProperty?.property_code && setPropertyBuildings(buildingsRes?.data);
             } catch (err) {
                 console.log(err);
             }
@@ -178,8 +178,8 @@ const Properties = () => {
 
     // List use effect
     useEffect(() => {
-        selectedBuilding._id && defaultOpenedProperty(selectedBuilding.property_code);
-        selectedComponent._id && defaultOpenedBuilding(selectedComponent.building_code);
+        selectedBuilding?._id && defaultOpenedProperty(selectedBuilding?.property_code);
+        selectedComponent?._id && defaultOpenedBuilding(selectedComponent?.building_code);
     }, [selectedBuilding, selectedComponent]);
 
     
