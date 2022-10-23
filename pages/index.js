@@ -7,6 +7,8 @@ import Layout from '../Components/Layout';
 const Home = () => {
 
   Cookie.remove('component');
+  Cookie.remove('property');
+  Cookie.remove('building');
 
   return (
     <>
