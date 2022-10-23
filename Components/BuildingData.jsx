@@ -1,6 +1,7 @@
 // Imports
 import axios from 'axios';
 import Link from 'next/link';
+import Cookie from 'js-cookie';
 import styled from 'styled-components';
 import {useState, useEffect} from 'react';
 import {AiOutlineDown} from 'react-icons/ai';
@@ -369,6 +370,8 @@ const BuildingData = ({selectedBuilding, isBuildingUpdate, setIsBuildingUpdate, 
     const deleteHandler = async () => {
         try {
             await axios.delete(`https://janus-server-side.herokuapp.com/buildings/${selectedBuilding._id}`);
+            Cookie.remove('building');
+            setSelectedBuilding({});
             window.location.reload();
         } catch (err) {
             console.log(err);

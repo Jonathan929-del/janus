@@ -78,7 +78,7 @@ const ListContainer = styled.div`
     height:90%;
     margin-top:30px;
 `
-const ListItem = styled.a`
+const ListItem = styled.p`
     width:100%;
     height:50px;
     display:flex;

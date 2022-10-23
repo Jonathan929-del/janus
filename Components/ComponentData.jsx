@@ -1,6 +1,7 @@
 // Imports
 import axios from 'axios';
 import moment from 'moment';
+import Cookie from 'js-cookie';
 import styled from 'styled-components';
 import {useState, useEffect} from 'react';
 import {AiOutlineDown} from 'react-icons/ai';
@@ -400,7 +401,7 @@ const CloseButton = styled.button`
 
 
 // Main Function
-const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpdate, setIsComponentUpdate, selectedBuilding, setSelectedBuilding, selectedBuildingHandler}) => {
+const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpdate, setIsComponentUpdate, selectedBuildingHandler}) => {
 
 
     // Actions opener
@@ -428,6 +429,8 @@ const ComponentData = ({selectedComponent, setSelectedComponent, isComponentUpda
     const deleteHandler = async () => {
         try {
             await axios.delete(`https://janus-server-side.herokuapp.com/components/${selectedComponent._id}`);
+            Cookie.remove('component');
+            setSelectedComponent({});
             window.location.reload();
         } catch (err) {
             console.log(err);
